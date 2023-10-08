@@ -16,7 +16,7 @@ Aplikacja do zamawiania jedzenia online, z dodatkową opcją pozwalającą na wy
 
 ## Hierarchia plików
 
-/ - Folder główny
-/src - Cześć aplikacji nie widoczna dla użytkownika
-/public - Cześć aplikacji widoczna dla użytkownika
-/public/assets - Assety aplikacji
+* / - Folder główny
+* /src - Cześć aplikacji nie widoczna dla użytkownika
+* /public - Cześć aplikacji widoczna dla użytkownika
+* /public/assets - Assety aplikacji

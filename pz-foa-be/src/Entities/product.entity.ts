@@ -12,10 +12,10 @@ export class ProductEntity implements ProductInterface {
   @Column({ name: 'DESC', type: 'varchar', length: 1024 })
   description: string;
 
-  @Column({ name: 'PRICE', type: 'double' })
+  @Column({ name: 'PRICE', type: 'decimal', precision: 10, scale: 2 })
   price: number;
 
-  @Column({ name: 'AVL_STOCK', type: 'int' })
+  @Column({ name: 'AVL_STOCK', type: 'int', precision: 5 })
   avalaibleStocks: number;
 
   @Column({

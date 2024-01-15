@@ -6,7 +6,7 @@ export class Order implements OrderInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 
-  @Column({ name: 'USER_ID', type: 'varchar' })
+  @Column({ name: 'USER_ID', type: 'varchar', length: 32 })
   userId: string;
 
   @Column({

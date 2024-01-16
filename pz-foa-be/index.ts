@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import * as express from 'express';
 import { DB } from './src/utils/database/database';
 
@@ -7,6 +8,8 @@ const port = 3000;
 app.get('/', (req, res) => {
   res.send('Hello World');
 });
+
+console.log(process.env['DB_SYNCHRONIZE']);
 
 if (DB.initialize()) {
   console.log('[MAIN]: Database connected');

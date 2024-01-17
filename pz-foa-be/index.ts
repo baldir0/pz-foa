@@ -9,8 +9,6 @@ app.get('/', (req, res) => {
   res.send('Hello World');
 });
 
-console.log(process.env['DB_SYNCHRONIZE']);
-
 if (DB.initialize()) {
   console.log('[MAIN]: Database connected');
 } else {

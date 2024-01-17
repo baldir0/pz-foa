@@ -9,7 +9,7 @@ export class UserEntity implements UserInterface {
   @Column({ name: 'LOGIN', unique: true, type: 'varchar', length: 255 })
   login: string;
 
-  @Column({ name: 'EMAIL', unique: true, type: 'varchar' })
+  @Column({ name: 'EMAIL', unique: true, type: 'varchar', length: 255 })
   email: string;
 
   @Column({ name: 'PASS_HASH', type: 'varchar' })

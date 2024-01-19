@@ -8,3 +8,4 @@ export class AuthError extends Error {
 export class AuthErrorUnauthorized extends AuthError {}
 export class AuthErrorNotFound extends AuthError {}
 export class AuthErrorInvalidInput extends AuthError {}
+export class AuthErrorUserTaken extends AuthError {}

@@ -4,6 +4,7 @@ import {
   AuthErrorInvalidInput,
   AuthErrorNotFound,
   AuthErrorUnauthorized,
+  AuthErrorUserTaken,
 } from '../errors';
 import Log4js from '../logger';
 
@@ -22,6 +23,8 @@ export const errorHandler = (
     return res.status(404).json({ message: err.message });
   } else if (err instanceof AuthErrorInvalidInput) {
     return res.status(400).json({ message: err.message });
+  } else if (err instanceof AuthErrorUserTaken) {
+    return res.status(409).json({ message: err.message });
   } else if (err instanceof AuthError) {
     return res.status(401).json({ message: 'Authorization error!' });
   }

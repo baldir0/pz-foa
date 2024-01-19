@@ -4,11 +4,12 @@
     "USER_NOT_FOUND": "Cannot find matching user!",
     "INVALID_LOGIN_DATA": "Recived invalid login data!",
     "INVALID_REGISTER_DATA": "Recived invalid register data!",
-    "REGISTER_FAILED": "Cannot create the user, please try again later."
+    "REGISTER_FAILED": "Cannot create the user, please try again later.",
+    "USER_ALREADY_EXIST": "Following login data are already taken."
   },
   "AUTH": {
     "USER_CREATED": "The user has been successful created.",
-    "LOGOUT": "The user has been looged out.",
+    "LOGOUT": "The user has been loogged out.",
     "LOGIN": "successful logged in."
   }
 }

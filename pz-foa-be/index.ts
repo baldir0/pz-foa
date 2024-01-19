@@ -5,17 +5,13 @@ import { json } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
-import { DB } from './src/utils/database/database';
+import Log4js from './src/utils/logger';
+
 import { AuthRouter } from './src/rotuers/auth.router';
 import { errorHandler } from './src/utils/middlewares/ErrorHandler';
 
 const app = express();
-
-if (DB.initialize()) {
-  console.log('[MAIN]: Database connected');
-} else {
-  console.error('Cannot connect to database, please check configuration');
-}
+const logger = Log4js.getLogger('Main');
 
 app.use(
   cors({
@@ -30,6 +26,12 @@ app.use(cookieParser());
 app.use('/auth', AuthRouter);
 
 app.use(errorHandler);
-app.listen(process.env.APP_PORT, async () => {
-  console.log(`[MAIN]: Listening on port ${process.env.APP_PORT}`);
-});
+app.listen(
+  parseInt(process.env.APP_PORT),
+  process.env.APP_HOSTNAME,
+  async () => {
+    logger.info(
+      `Listening on https://${process.env.APP_HOSTNAME}:${process.env.APP_PORT}`
+    );
+  }
+);

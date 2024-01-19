@@ -6,7 +6,11 @@ import { JWTPayload } from '../../utils/passwd/jwt';
 import { UserInterface } from '../../Interfaces/user-interface';
 import { loginDataInterface } from '../../Interfaces/loginData-interface';
 import { Response } from 'express';
-import { AuthError, AuthErrorNotFound } from '../../utils/errors';
+import {
+  AuthError,
+  AuthErrorNotFound,
+  AuthErrorUserTaken,
+} from '../../utils/errors';
 import { hashPWD } from '../../utils/passwd/hashPWD';
 import messages from '../../../src/data/en-EN.json';
 
@@ -73,14 +77,14 @@ export class AuthService {
         })
         .status(200)
         .json({ user, message: messages.AUTH.LOGIN });
-    } catch (err) {
+    } catch {
       throw new AuthErrorNotFound(messages.ERROR.UNAUTHORIZED_USER);
     }
   }
 
-  public async logout(id: string, res: Response) {
+  public async logout(token: string, res: Response) {
     try {
-      await this.userRepo.findOneBy({ id, token: null });
+      await this.userRepo.findOneBy({ token });
       return res
         .clearCookie('jwt', {
           secure: false,
@@ -109,7 +113,7 @@ export class AuthService {
       } while (isTaken);
       const salt = crypto.randomUUID();
 
-      const result = this.userRepo.insert({
+      await this.userRepo.insert({
         id: uuid,
         login,
         email,
@@ -117,10 +121,11 @@ export class AuthService {
         salt,
         token: null,
       });
-      console.log(result);
       res.status(201).json(messages.AUTH.USER_CREATED);
     } catch (err) {
-      console.log(err);
+      if (err.code === 'ER_DUP_ENTRY') {
+        throw new AuthErrorUserTaken(messages.ERROR.USER_ALREADY_EXIST);
+      }
       throw new AuthError(messages.ERROR.REGISTER_FAILED);
     }
   }

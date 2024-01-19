@@ -6,10 +6,22 @@ export class UserEntity implements UserInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 
-  @Column({ name: 'LOGIN', unique: true, type: 'varchar', length: 255 })
+  @Column({
+    name: 'LOGIN',
+    unique: true,
+    type: 'varchar',
+    length: 255,
+    nullable: false,
+  })
   login: string;
 
-  @Column({ name: 'EMAIL', unique: true, type: 'varchar', length: 255 })
+  @Column({
+    name: 'EMAIL',
+    unique: true,
+    type: 'varchar',
+    length: 255,
+    nullable: false,
+  })
   email: string;
 
   @Column({ name: 'PASS_HASH', type: 'varchar' })

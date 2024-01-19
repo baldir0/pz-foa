@@ -15,8 +15,16 @@ export class UserEntity implements UserInterface {
   @Column({ name: 'PASS_HASH', type: 'varchar' })
   passwordHSW: string;
 
-  @Column({ name: 'SALT', type: 'varchar', length: 32 })
+  @Column({ name: 'SALT', type: 'varchar', length: 36 })
   salt: string;
+
+  @Column({
+    name: 'TOKEN',
+    type: 'varchar',
+    nullable: true,
+    default: null,
+  })
+  token: string;
 
   @Column({
     name: 'CREATED_AT',
@@ -30,15 +38,7 @@ export class UserEntity implements UserInterface {
     name: 'CHANGED_AT',
     type: 'datetime',
     nullable: true,
-    default: null,
+    default: () => 'CURRENT_TIMESTAMP',
   })
   changedAt: string;
-
-  @Column({
-    name: 'TOKEN',
-    type: 'varchar',
-    nullable: true,
-    default: null,
-  })
-  token: string;
 }

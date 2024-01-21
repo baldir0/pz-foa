@@ -18,3 +18,4 @@ export class ProductError extends Error {
 }
 
 export class ProductErrorInertionFailed extends ProductError {}
+export class ProductErrorNotFound extends ProductError {}

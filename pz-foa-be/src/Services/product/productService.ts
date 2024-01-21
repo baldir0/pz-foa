@@ -2,7 +2,10 @@ import { Response } from 'express';
 import { ProductEntity } from './../../../src/Entities/product.entity';
 import { NewProductInterface } from './../../../src/Interfaces/product-interface';
 import { DB } from './../../../src/utils/database/database';
-import { ProductErrorInertionFailed } from './../../../src/utils/errors';
+import {
+  ProductErrorInertionFailed,
+  ProductErrorNotFound,
+} from './../../../src/utils/errors';
 import { Repository } from 'typeorm';
 import messages from './../../data/en-EN.json';
 
@@ -16,7 +19,7 @@ export class ProductService {
   public async create(productData: NewProductInterface, res: Response) {
     try {
       const id = crypto.randomUUID();
-      this.productRepo.insert({
+      await this.productRepo.insert({
         id,
         ...productData,
       });
@@ -29,7 +32,14 @@ export class ProductService {
     }
   }
 
-  public async delete(productId: string, res: Response) {}
+  public async delete(productId: string, res: Response) {
+    try {
+      await this.productRepo.delete({ id: productId });
+      res.status(200).json({ message: `Product ${productId} deleted!` });
+    } catch {
+      throw new ProductErrorNotFound(messages.ERROR.PRODUCT_NOT_FOUND);
+    }
+  }
 
   public async get(productId: string, res: Response) {}
 

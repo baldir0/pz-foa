@@ -41,7 +41,14 @@ export class ProductService {
     }
   }
 
-  public async get(productId: string, res: Response) {}
+  public async get(productId: string, res: Response) {
+    try {
+      const result = await this.productRepo.findBy({ id: productId });
+      res.status(200).json({ product: result[0] });
+    } catch {
+      throw new ProductErrorNotFound(messages.ERROR.PRODUCT_NOT_FOUND);
+    }
+  }
 
   public async update(
     productId: string,

@@ -1,20 +1,37 @@
 import 'dotenv/config';
-import * as express from 'express';
-import { DB } from './src/utils/database/database';
+import 'express-async-errors';
+import express from 'express';
+import { json } from 'express';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+
+import Log4js from './src/utils/logger';
+
+import { AuthRouter } from './src/rotuers/auth.router';
+import { errorHandler } from './src/utils/middlewares/ErrorHandler';
 
 const app = express();
-const port = 3000;
+const logger = Log4js.getLogger('Main');
 
-app.get('/', (req, res) => {
-  res.send('Hello World');
-});
+app.use(
+  cors({
+    origin: 'localhost:3000',
+  })
+);
 
-if (DB.initialize()) {
-  console.log('[MAIN]: Database connected');
-} else {
-  console.error('Cannot connect to database, please check configuration');
-}
+app.use(json());
 
-app.listen(port, async () => {
-  console.log(`[MAIN]: Listening on port ${port}`);
-});
+app.use(cookieParser());
+
+app.use('/auth', AuthRouter);
+
+app.use(errorHandler);
+app.listen(
+  parseInt(process.env.APP_PORT),
+  process.env.APP_HOSTNAME,
+  async () => {
+    logger.info(
+      `Listening on https://${process.env.APP_HOSTNAME}:${process.env.APP_PORT}`
+    );
+  }
+);

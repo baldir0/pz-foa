@@ -1,4 +1,7 @@
 import { DataSource } from 'typeorm';
+import Log4js from './../logger';
+
+const logger = Log4js.getLogger('Database');
 
 export const DB = new DataSource({
   type: 'mysql',
@@ -12,3 +15,11 @@ export const DB = new DataSource({
   logging: ['error', 'info', 'log'],
   synchronize: Boolean(process.env['DB_SYNCHRONIZE']),
 });
+
+if (DB.initialize()) {
+  logger.info('Successful connected to database.');
+} else {
+  logger.fatal(
+    'Failed to connect to database. Please check your configuration.'
+  );
+}

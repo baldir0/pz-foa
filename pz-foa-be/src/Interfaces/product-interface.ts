@@ -8,3 +8,8 @@ export interface ProductInterface {
   changedAt: string;
   createdBy: string;
 }
+
+export type NewProductInterface = Omit<
+  ProductInterface,
+  'changedAt' | 'createdAt' | 'createdBy' | 'id'
+>;

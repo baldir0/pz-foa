@@ -5,7 +5,8 @@
     "INVALID_LOGIN_DATA": "Recived invalid login data!",
     "INVALID_REGISTER_DATA": "Recived invalid register data!",
     "REGISTER_FAILED": "Cannot create the user, please try again later.",
-    "USER_ALREADY_EXIST": "Following login data are already taken."
+    "USER_ALREADY_EXIST": "Following login data are already taken.",
+    "PRODUCT_INSERTION_FAILURE": "Cannot create product, please try again."
   },
   "AUTH": {
     "USER_CREATED": "The user has been successful created.",

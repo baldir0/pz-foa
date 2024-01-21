@@ -30,7 +30,7 @@ export class ProductEntity implements ProductInterface {
     name: 'CHANGED_AT',
     type: 'datetime',
     nullable: true,
-    default: null,
+    default: () => 'CURRENT_TIMESTAMP',
   })
   changedAt: string;
 

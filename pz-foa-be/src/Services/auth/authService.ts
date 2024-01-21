@@ -9,12 +9,13 @@ import { Response } from 'express';
 import {
   AuthError,
   AuthErrorNotFound,
+  AuthErrorUnauthorized,
   AuthErrorUserTaken,
 } from '../../utils/errors';
 import { hashPWD } from '../../utils/passwd/hashPWD';
 import messages from '../../../src/data/en-EN.json';
 
-export class AuthService {
+class AuthService {
   constructor(
     private userRepo: Repository<UserEntity> = DB.getRepository(UserEntity)
   ) {}
@@ -129,4 +130,17 @@ export class AuthService {
       throw new AuthError(messages.ERROR.REGISTER_FAILED);
     }
   }
+
+  public async validate(token: string): Promise<UserEntity | null> {
+    try {
+      if (!token)
+        throw new AuthErrorUnauthorized(messages.ERROR.UNAUTHORIZED_USER);
+      const user = await this.userRepo.findOne({ where: { token } });
+      return user;
+    } catch {
+      throw new AuthErrorUnauthorized(messages.ERROR.UNAUTHORIZED_USER);
+    }
+  }
 }
+
+export const authService = new AuthService();

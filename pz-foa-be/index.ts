@@ -28,6 +28,7 @@ app.use('/auth', AuthRouter);
 app.use('/product', ProductRouter);
 
 app.use(errorHandler);
+
 app.listen(
   parseInt(process.env.APP_PORT),
   process.env.APP_HOSTNAME,

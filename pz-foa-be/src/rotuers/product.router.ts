@@ -1,32 +1,35 @@
 import { Router } from 'express';
-import { NewProductInterface } from 'src/Interfaces/product-interface';
-import { ProductService } from 'src/Services/product/productService';
-
+import { NewProductInterface } from './../../src/Interfaces/product-interface';
+import { productService } from './../../src/Services/product/productService';
+import { authService } from './../../src/Services/auth/authService';
 const ProductRouter = Router();
-const productService = new ProductService();
 
-ProductRouter.get('/:id', (req, res) => {
-  const id: string = req.params.id;
-  productService.get(id, res);
+ProductRouter.get('/list', async (req, res) => {
+  productService.getAll(res);
 })
-  .get('/list', (req, res) => {
-    productService.getAll(res);
+  .get('/:id', async (req, res) => {
+    const id: string = req.params.id;
+    productService.get(id, res);
   })
-  .post('/create', (req, res) => {
-    // TODO: ADD PRIVILAGES CHECK
+  .post('/', async (req, res, next) => {
+    const token = req.cookies.jwt;
+    await authService.validate(token);
     const data: NewProductInterface = req.body;
-    productService.create(data, res);
+
+    productService.create(data, req.cookies.jwt, res, next);
   })
-  .patch('/update/:id', (req, res) => {
-    // TODO: ADD PRIVILAGES CHECK
+  .patch('/:id', async (req, res, next) => {
+    const token = req.cookies.jwt;
+    await authService.validate(token);
     const id: string = req.params.id;
     const data: NewProductInterface = req.body;
-    productService.update(id, data, res);
+    productService.update(id, data, req.cookies.jwt, res, next);
   })
-  .delete('/:id', (req, res) => {
-    // TODO: ADD PRIVILAGES CHECK
+  .delete('/:id', async (req, res, next) => {
+    const token = req.cookies.jwt;
+    await authService.validate(token);
     const id: string = req.params.id;
-    productService.delete(id, res);
+    productService.delete(id, res, next);
   });
 
 export { ProductRouter };

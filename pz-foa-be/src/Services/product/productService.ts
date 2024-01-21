@@ -3,6 +3,7 @@ import { ProductEntity } from './../../../src/Entities/product.entity';
 import { NewProductInterface } from './../../../src/Interfaces/product-interface';
 import { DB } from './../../../src/utils/database/database';
 import {
+  ProductError,
   ProductErrorInertionFailed,
   ProductErrorNotFound,
 } from './../../../src/utils/errors';
@@ -54,5 +55,24 @@ export class ProductService {
     productId: string,
     productData: NewProductInterface,
     res: Response
-  ) {}
+  ) {
+    try {
+      await this.productRepo.update({ id: productId }, productData);
+      res.status(200).json({
+        message: `Product ${productId} updated!`,
+        newData: productData,
+      });
+    } catch {
+      throw new ProductErrorNotFound(messages.ERROR.PRODUCT_NOT_FOUND);
+    }
+  }
+
+  public async getAll(res: Response) {
+    try {
+      const result = await this.productRepo.findAndCount();
+      res.status(200).json(result);
+    } catch {
+      throw new ProductError('Something went wrong!');
+    }
+  }
 }

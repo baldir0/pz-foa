@@ -9,6 +9,7 @@ import Log4js from './src/utils/logger';
 
 import { AuthRouter } from './src/rotuers/auth.router';
 import { errorHandler } from './src/utils/middlewares/ErrorHandler';
+import { ProductRouter } from './src/rotuers/product.router';
 
 const app = express();
 const logger = Log4js.getLogger('Main');
@@ -24,6 +25,7 @@ app.use(json());
 app.use(cookieParser());
 
 app.use('/auth', AuthRouter);
+app.use('/product', ProductRouter);
 
 app.use(errorHandler);
 app.listen(

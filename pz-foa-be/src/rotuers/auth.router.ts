@@ -1,15 +1,13 @@
 import { Router } from 'express';
 import { loginDataInterface } from './../Interfaces/loginData-interface';
-import { AuthService } from '../Services/auth/authService';
+import { authService } from '../Services/auth/authService';
 import {
-  AuthError,
   AuthErrorInvalidInput,
   AuthErrorNotFound,
 } from './../../src/utils/errors';
 import messages from './../../src/data/en-EN.json';
 
 const AuthRouter = Router();
-const authService = new AuthService();
 
 AuthRouter.post('/login', async (req, res) => {
   const loginData: loginDataInterface = req.body;
@@ -21,7 +19,7 @@ AuthRouter.post('/login', async (req, res) => {
 
 AuthRouter.get('/logout', async (req, res) => {
   if (!req.cookies.jwt)
-    throw new AuthErrorNotFound(messages.ERROR.UNAUTHORIZED_USER);
+    throw new AuthErrorNotFound(messages.ERROR.USER_NOT_LOG_IN);
   await authService.logout(req.cookies.jwt, res);
 });
 

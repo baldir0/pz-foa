@@ -8,7 +8,8 @@
     "USER_ALREADY_EXIST": "Following login data are already taken.",
     "PRODUCT_INSERTION_FAILURE": "Cannot create product, please try again.",
     "PRODUCT_NOT_FOUND": "Cannot find product with passed id.",
-    "USER_NOT_LOG_IN": "Log in first!"
+    "USER_NOT_LOG_IN": "Log in first!",
+    "LACK_OF_PRIVILAGES": "You do not have privilages to do this."
   },
   "AUTH": {
     "USER_CREATED": "The user has been successful created.",

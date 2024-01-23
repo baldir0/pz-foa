@@ -3,6 +3,7 @@ import { DB } from '../database/database';
 import { UserEntity } from 'src/Entities/user.entity';
 import { Request } from 'express';
 import { Repository } from 'typeorm';
+import { AuthErrorNotFound, ErrorBase } from '../errors';
 
 export interface JWTPayload {
   id: string;
@@ -22,14 +23,14 @@ export class JWTStrategy extends Strategy {
     this.userRepo = DB.getRepository(UserEntity);
   }
 
-  async validate(payload: JWTPayload, done: (error, user) => void) {
+  async validate(payload: JWTPayload, done: (error: ErrorBase, user) => void) {
     if (!payload || !payload.id) {
-      return done('ERROR: Empty payload!', null); // TODO: Add Error
+      return done(new AuthErrorNotFound(), null);
     }
 
     const user = await this.userRepo.findOneBy({ token: payload.id });
     if (!user) {
-      return done('ERROR: No such user!', null); // TODO: Add Error
+      return done(new AuthErrorNotFound(), null);
     }
 
     return done(null, user);

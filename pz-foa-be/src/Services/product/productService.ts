@@ -4,6 +4,7 @@ import { NewProductInterface } from './../../../src/Interfaces/product-interface
 import { DB } from './../../../src/utils/database/database';
 import {
   AuthError,
+  AuthErrorLackOfPrivilages,
   AuthErrorUnauthorized,
   ProductError,
   ProductErrorInsertionFailed,
@@ -28,17 +29,18 @@ class ProductService {
     next: NextFunction
   ) {
     try {
-      const id = crypto.randomUUID();
-
       if (!token) {
         return next(
           new AuthErrorUnauthorized(messages.ERROR.INVALID_LOGIN_DATA)
         );
       }
+
+      const id = crypto.randomUUID();
       const user = await this.userRepo.findOne({
         select: { id: true },
         where: { token: token },
       });
+
       await this.productRepo.insert({
         id,
         ...productData,
@@ -55,16 +57,19 @@ class ProductService {
     }
   }
 
-  public async delete(productId: string, res: Response, next: NextFunction) {
-    try {
-      const result = await this.productRepo.delete({ id: productId });
-      if (!result.affected) {
-        return next(new ProductErrorNotFound(messages.ERROR.PRODUCT_NOT_FOUND));
-      }
-      res.status(200).json({ message: `Product ${productId} deleted!` });
-    } catch {
-      next(new ProductErrorNotFound(messages.ERROR.PRODUCT_NOT_FOUND));
+  public async delete(productId: string, user: UserEntity, res: Response) {
+    const selectResult = await this.productRepo.findOne({
+      where: { id: productId, createdBy: user.isAdmin ? null : user.id },
+      select: { id: true },
+    });
+    if (!selectResult) throw new AuthErrorLackOfPrivilages();
+
+    const deleteResult = await this.productRepo.delete({ id: productId });
+
+    if (!deleteResult.affected) {
+      throw new ProductErrorNotFound(messages.ERROR.PRODUCT_NOT_FOUND);
     }
+    res.status(200).json({ message: `Product ${productId} deleted!` });
   }
 
   public async get(productId: string, res: Response) {

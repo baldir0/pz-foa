@@ -6,10 +6,10 @@ export class UserOrdersEntity implements userOrdersInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 
-  @Column({ name: 'ORDER_ID', type: 'varchar', length: 32 })
+  @Column({ name: 'ORDER_ID', type: 'varchar', length: 36 })
   orderId: string;
 
-  @Column({ name: 'PRODUCT_ID', type: 'varchar', length: 32 })
+  @Column({ name: 'PRODUCT_ID', type: 'varchar', length: 36 })
   productId: string;
 
   @Column({ name: 'PRICE', type: 'decimal', precision: 10, scale: 2 })

@@ -17,20 +17,6 @@ export const errorHandler = (
     });
   }
 
-  // if (err instanceof AuthErrorUnauthorized) {
-  //   return res.status(401).json({ message: err.message });
-  // } else if (err instanceof (AuthErrorNotFound || ProductErrorNotFound)) {
-  //   return res.status(404).json({ message: err.message });
-  // } else if (
-  //   err instanceof (AuthErrorInvalidInput || ProductErrorInsertionFailed)
-  // ) {
-  //   return res.status(400).json({ message: err.message });
-  // } else if (err instanceof AuthErrorUserTaken) {
-  //   return res.status(409).json({ message: err.message });
-  // } else if (err instanceof AuthError) {
-  //   return res.status(401).json({ message: 'Authorization error!' });
-  // }
-
   return res.status(400).json({
     message: 'An error occured. Contact administrator for more information.',
   });

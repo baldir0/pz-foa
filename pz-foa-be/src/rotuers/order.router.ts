@@ -42,4 +42,10 @@ orderRouter
     } catch (err) {
       next(err);
     }
+  })
+  .put('', (req, res, next) => {
+    try {
+    } catch (err) {
+      next(err);
+    }
   });

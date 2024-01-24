@@ -1,4 +1,4 @@
-export interface userOrdersInterface {
+export interface productOrderInterface {
   id: string;
   orderId: string;
   productId: string;

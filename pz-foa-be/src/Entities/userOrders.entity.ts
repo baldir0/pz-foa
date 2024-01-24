@@ -1,8 +1,8 @@
-import { userOrdersInterface } from 'src/Interfaces/userOrder-interface';
+import { productOrderInterface } from 'src/Interfaces/productOrder-interface';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('user_orders')
-export class UserOrdersEntity implements userOrdersInterface {
+@Entity('product_order')
+export class UserOrdersEntity implements productOrderInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 

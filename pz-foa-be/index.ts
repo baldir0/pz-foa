@@ -1,5 +1,4 @@
 import 'dotenv/config';
-import 'express-async-errors';
 import express from 'express';
 import { json } from 'express';
 import cors from 'cors';
@@ -10,6 +9,8 @@ import Log4js from './src/utils/logger';
 import { AuthRouter } from './src/rotuers/auth.router';
 import { errorHandler } from './src/utils/middlewares/ErrorHandler';
 import { ProductRouter } from './src/rotuers/product.router';
+
+import 'express-async-errors';
 
 const app = express();
 const logger = Log4js.getLogger('Main');

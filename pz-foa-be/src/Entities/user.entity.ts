@@ -39,6 +39,14 @@ export class UserEntity implements UserInterface {
   token: string;
 
   @Column({
+    name: 'IS_ADMIN',
+    type: 'boolean',
+    nullable: true,
+    default: false,
+  })
+  isAdmin: boolean;
+
+  @Column({
     name: 'CREATED_AT',
     type: 'datetime',
     nullable: true,

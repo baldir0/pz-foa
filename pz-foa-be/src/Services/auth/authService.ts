@@ -1,7 +1,7 @@
 import { UserEntity } from '../../Entities/user.entity';
 import { DB } from '../../utils/database/database';
 import { Repository } from 'typeorm';
-import { sign } from 'jsonwebtoken';
+import { JwtPayload, sign, verify } from 'jsonwebtoken';
 import { JWTPayload } from '../../utils/passwd/jwt';
 import { UserInterface } from '../../Interfaces/user-interface';
 import { loginDataInterface } from '../../Interfaces/loginData-interface';
@@ -10,7 +10,7 @@ import {
   AuthError,
   AuthErrorNotFound,
   AuthErrorUnauthorized,
-  AuthErrorUserTaken,
+  AuthErrorUserExists,
 } from '../../utils/errors';
 import { hashPWD } from '../../utils/passwd/hashPWD';
 import messages from '../../../src/data/en-EN.json';
@@ -50,21 +50,17 @@ class AuthService {
   public async login(loginData: loginDataInterface, res: Response) {
     try {
       const { salt } = await this.userRepo.findOne({
-        select: {
-          salt: true,
-        },
-        where: {
-          [loginData.login ? 'login' : 'email']: loginData.login
-            ? loginData.login
-            : loginData.email,
-        },
+        where: [{ login: loginData.login }, { email: loginData.email }],
+        select: { salt: true },
       });
 
-      const user = await this.userRepo.findOneBy({
-        [loginData.login ? 'login' : 'email']: loginData.login
-          ? loginData.login
-          : loginData.email,
-        passwordHSW: await hashPWD(loginData.passwordHSW, salt),
+      const pass = await hashPWD(loginData.passwordHSW, salt);
+
+      const user = await this.userRepo.findOne({
+        where: [
+          { login: loginData.login, passwordHSW: pass },
+          { email: loginData.email, passwordHSW: pass },
+        ],
       });
 
       user.passwordHSW = null;
@@ -79,7 +75,7 @@ class AuthService {
         .status(200)
         .json({ user, message: messages.AUTH.LOGIN });
     } catch {
-      throw new AuthErrorNotFound(messages.ERROR.UNAUTHORIZED_USER);
+      throw new AuthErrorNotFound();
     }
   }
 
@@ -124,21 +120,27 @@ class AuthService {
       });
       res.status(201).json(messages.AUTH.USER_CREATED);
     } catch (err) {
-      if (err.code === 'ER_DUP_ENTRY') {
-        throw new AuthErrorUserTaken(messages.ERROR.USER_ALREADY_EXIST);
-      }
-      throw new AuthError(messages.ERROR.REGISTER_FAILED);
+      if (err.code === 'ER_DUP_ENTRY') throw new AuthErrorUserExists();
+      throw new AuthError();
     }
   }
 
-  public async validate(token: string): Promise<UserEntity | null> {
+  public async validate(reqToken: string): Promise<UserEntity | null> {
     try {
-      if (!token)
-        throw new AuthErrorUnauthorized(messages.ERROR.UNAUTHORIZED_USER);
-      const user = await this.userRepo.findOne({ where: { token } });
+      if (!reqToken) throw new AuthErrorUnauthorized();
+
+      const { id }: JWTPayload = verify(
+        reqToken,
+        process.env.AUTH_SECRET
+      ) as JWTPayload;
+
+      const user = await this.userRepo.findOne({
+        where: { token: id },
+      });
+
       return user;
     } catch {
-      throw new AuthErrorUnauthorized(messages.ERROR.UNAUTHORIZED_USER);
+      throw new AuthErrorUnauthorized();
     }
   }
 }

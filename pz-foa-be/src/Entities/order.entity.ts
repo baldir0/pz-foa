@@ -2,7 +2,7 @@ import { OrderInterface } from 'src/Interfaces/order-interface';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('orders')
-export class Order implements OrderInterface {
+export class OrderEntity implements OrderInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { loginDataInterface } from './../Interfaces/loginData-interface';
-import { authService } from '../Services/auth/authService';
+import { authService } from '../Services/authService';
 import {
   AuthErrorInvalidLoginData,
   AuthErrorNotFound,

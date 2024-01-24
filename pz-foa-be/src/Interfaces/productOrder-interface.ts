@@ -1,7 +1,11 @@
-export interface productOrderInterface {
+export interface ProductOrderInterface {
   id: string;
   orderId: string;
   productId: string;
-  price: number;
   amount: number;
 }
+
+export type AddProductToOrderInterface = Omit<
+  ProductOrderInterface,
+  'id' | 'orderId' | 'price'
+>;

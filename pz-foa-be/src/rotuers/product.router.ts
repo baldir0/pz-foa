@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { NewProductInterface } from './../../src/Interfaces/product-interface';
-import { productService } from './../../src/Services/product/productService';
-import { authService } from './../../src/Services/auth/authService';
+import { productService } from '../Services/productService';
+import { authService } from '../Services/authService';
 
 const ProductRouter = Router();
 

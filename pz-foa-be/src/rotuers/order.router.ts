@@ -1,13 +1,64 @@
 import { Router } from 'express';
 import { UserEntity } from 'src/Entities/user.entity';
+import { ProductOrderEntity } from 'src/Entities/productOrder.entity';
+import { AddProductToOrderInterface } from 'src/Interfaces/productOrder-interface';
 import { serviceResult } from 'src/Interfaces/serviceReturn-interface';
-import { authService } from 'src/Services/auth/authService';
-import { orderService } from 'src/Services/order/orderService';
+import { authService } from 'src/Services/authService';
+import { orderService } from 'src/Services/orderService';
 import { AuthErrorLackOfPrivilages } from 'src/utils/errors';
 
 const orderRouter = Router();
 
 orderRouter
+  .patch('/position/:orderId/:positionId', async (req, res, next) => {
+    try {
+      // [x] Admin only function
+      const user: UserEntity = await authService.validate(req.cookies.jwt);
+      if (!user.isAdmin) throw new AuthErrorLackOfPrivilages();
+
+      const updateData: AddProductToOrderInterface = req.body;
+
+      const result: serviceResult = await orderService.updateOrderPosition(
+        req.params.orderId,
+        req.params.positionId,
+        updateData
+      );
+      res.status(result.status).json(result.data);
+    } catch (err) {
+      next(err);
+    }
+  })
+  .delete('/position/:orderId/:positionId', async (req, res, next) => {
+    try {
+      // [x] Admin only function
+      const user: UserEntity = await authService.validate(req.cookies.jwt);
+      if (!user.isAdmin) throw new AuthErrorLackOfPrivilages();
+
+      const result: serviceResult = await orderService.deleteOrderPosition(
+        req.params.orderId,
+        req.params.positionId
+      );
+    } catch (err) {
+      next(err);
+    }
+  })
+  .put('/position/:orderId', async (req, res, next) => {
+    try {
+      // [x] Admin only function
+      const user: UserEntity = await authService.validate(req.cookies.jwt);
+      if (!user.isAdmin) throw new AuthErrorLackOfPrivilages();
+
+      const productData: AddProductToOrderInterface = req.body;
+      const result: serviceResult = await orderService.addProduct(
+        productData.productId,
+        req.params.orderId,
+        productData.amount
+      );
+      res.status(result.status).json(result.data);
+    } catch (err) {
+      next(err);
+    }
+  })
   .get('/list', async (req, res, next) => {
     try {
       const user: UserEntity = await authService.validate(req.cookies.jwt);
@@ -78,10 +129,21 @@ orderRouter
   .put('/', async (req, res, next) => {
     try {
       const user: UserEntity = await authService.validate(req.cookies.jwt);
+      const products: AddProductToOrderInterface[] = req.body;
 
       const result: serviceResult = await orderService.create(user);
+
+      products.forEach(async (product) => {
+        await orderService.addProduct(
+          product.productId,
+          result.data['id'],
+          product.amount
+        );
+      });
+
       res.status(result.status).send(result.data);
       // [x]: Create new Order
+      // [X]: Gets array of products
     } catch (err) {
       next(err);
     }

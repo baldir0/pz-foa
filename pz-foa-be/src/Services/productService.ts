@@ -1,7 +1,7 @@
 import { NextFunction, Response } from 'express';
-import { ProductEntity } from './../../../src/Entities/product.entity';
-import { NewProductInterface } from './../../../src/Interfaces/product-interface';
-import { DB } from './../../../src/utils/database/database';
+import { ProductEntity } from '../Entities/product.entity';
+import { NewProductInterface } from '../Interfaces/product-interface';
+import { DB } from '../utils/database/database';
 import {
   AuthError,
   AuthErrorLackOfPrivilages,
@@ -9,10 +9,10 @@ import {
   ProductError,
   ProductErrorInsertionFailed,
   ProductErrorNotFound,
-} from './../../../src/utils/errors';
+} from '../utils/errors';
 import { Repository } from 'typeorm';
-import messages from './../../data/en-EN.json';
-import { UserEntity } from './../../../src/Entities/user.entity';
+import messages from '../data/en-EN.json';
+import { UserEntity } from '../Entities/user.entity';
 
 class ProductService {
   constructor(

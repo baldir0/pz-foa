@@ -10,7 +10,7 @@ import { AuthErrorLackOfPrivilages } from 'src/utils/errors';
 const orderRouter = Router();
 
 orderRouter
-  .patch('/position/:orderId/:positionId', async (req, res, next) => {
+  .patch('/:orderId/position/:positionId', async (req, res, next) => {
     try {
       // [x] Admin only function
       const user: UserEntity = await authService.validate(req.cookies.jwt);
@@ -28,7 +28,7 @@ orderRouter
       next(err);
     }
   })
-  .delete('/position/:orderId/:positionId', async (req, res, next) => {
+  .delete('/:orderId/position/:positionId', async (req, res, next) => {
     try {
       // [x] Admin only function
       const user: UserEntity = await authService.validate(req.cookies.jwt);
@@ -38,11 +38,12 @@ orderRouter
         req.params.orderId,
         req.params.positionId
       );
+      res.status(result.status).json(result.data);
     } catch (err) {
       next(err);
     }
   })
-  .put('/position/:orderId', async (req, res, next) => {
+  .put('/:orderId/position/', async (req, res, next) => {
     try {
       // [x] Admin only function
       const user: UserEntity = await authService.validate(req.cookies.jwt);

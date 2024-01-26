@@ -1,13 +1,16 @@
-import { OrderEntity } from 'src/Entities/order.entity';
-import { ProductOrderEntity } from 'src/Entities/productOrder.entity';
-import { UserEntity } from 'src/Entities/user.entity';
-import { OrderDataInterface } from 'src/Interfaces/order-interface';
 import {
-  AddProductToOrderInterface,
-  ProductOrderInterface,
-} from 'src/Interfaces/productOrder-interface';
-import { serviceResult } from 'src/Interfaces/serviceReturn-interface';
-import { DB } from 'src/utils/database/database';
+  AuthErrorLackOfPrivilages,
+  OrderError,
+  OrderErrorInsertionFailed,
+  OrderErrorNotFound,
+} from './../utils/errors';
+import { OrderEntity } from './../../src/Entities/order.entity';
+import { ProductOrderEntity } from './../../src/Entities/productOrder.entity';
+import { UserEntity } from './../../src/Entities/user.entity';
+import { OrderDataInterface } from './../../src/Interfaces/order-interface';
+import { AddProductToOrderInterface } from './../../src/Interfaces/productOrder-interface';
+import { serviceResult } from './../../src/Interfaces/serviceReturn-interface';
+import { DB } from './../../src/utils/database/database';
 import { Repository } from 'typeorm';
 
 class OrderService {
@@ -37,6 +40,8 @@ class OrderService {
       where: { id: orderId, userId: user.isAdmin ? null : user.id },
     });
 
+    if (!result) throw new OrderErrorNotFound();
+
     const orderPositions = await this.productOrderRepo.find({
       where: { orderId },
     });
@@ -55,18 +60,34 @@ class OrderService {
     orderId: string,
     orderData: OrderDataInterface
   ): Promise<serviceResult> {
-    const result = await this.orderRepo.update(
-      {
-        id: orderId,
-        userId: user.isAdmin ? null : user.id,
-      },
-      orderData
-    );
+    let result;
+    if (user.isAdmin) {
+      result = await this.orderRepo.update(
+        {
+          id: orderId,
+        },
+        orderData
+      );
+    } else {
+      result = await this.orderRepo.update(
+        {
+          id: orderId,
+          userId: user.id,
+        },
+        orderData
+      );
+    }
 
-    return {
-      status: 200,
-      data: result,
-    };
+    if (result.affected)
+      return {
+        status: 200,
+        data: {
+          orderId: orderId,
+          newData: orderData,
+        },
+      };
+
+    throw new OrderErrorNotFound();
   }
 
   public async delete(orderId: string): Promise<serviceResult> {
@@ -74,16 +95,32 @@ class OrderService {
 
     return {
       status: 200,
-      data: result,
+      data: {
+        orderId: orderId,
+      },
     };
   }
 
-  public async create(user: UserEntity): Promise<serviceResult> {
+  public async create(
+    user: UserEntity,
+    products: [AddProductToOrderInterface]
+  ): Promise<serviceResult> {
     const result = await this.orderRepo.insert({ userId: user.id });
+
+    if (products.length)
+      products.forEach(async (product) => {
+        await this.addProduct(
+          product.productId,
+          result.identifiers[0].id,
+          product.amount
+        );
+      });
 
     return {
       status: 201,
-      data: result,
+      data: {
+        orderId: result.identifiers[0].id,
+      },
     };
   }
 
@@ -99,10 +136,15 @@ class OrderService {
       productId,
     });
 
-    return {
-      status: 200,
-      data: result,
-    };
+    if (result)
+      return {
+        status: 200,
+        data: {
+          productId: productId,
+        },
+      };
+
+    throw new OrderErrorInsertionFailed();
   }
 
   public async updateOrderPosition(
@@ -115,10 +157,14 @@ class OrderService {
       orderData
     );
 
-    return {
-      status: 200,
-      data: result,
-    };
+    if (result.affected)
+      return {
+        status: 200,
+        data: {
+          positionId: positionId,
+          updated: orderData,
+        },
+      };
   }
 
   public async deleteOrderPosition(
@@ -130,10 +176,41 @@ class OrderService {
       id: positionId,
     });
 
-    return {
-      status: 200,
-      data: result,
-    };
+    if (result.affected)
+      return {
+        status: 200,
+        data: {
+          positionId,
+        },
+      };
+
+    throw new OrderErrorNotFound();
+  }
+
+  public async getOrderPosition(
+    user: UserEntity,
+    orderId: string,
+    positionId: string
+  ): Promise<serviceResult> {
+    if (!user.isAdmin) {
+      const validate = await this.orderRepo.findOneBy({ userId: user.id });
+      if (!validate) throw new AuthErrorLackOfPrivilages();
+    }
+
+    const result = await this.productOrderRepo.findOne({
+      where: {
+        orderId,
+        id: positionId,
+      },
+    });
+
+    if (result)
+      return {
+        status: 200,
+        data: result,
+      };
+
+    throw new OrderErrorNotFound();
   }
 }
 

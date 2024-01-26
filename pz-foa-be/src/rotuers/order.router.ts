@@ -1,15 +1,50 @@
 import { Router } from 'express';
-import { UserEntity } from 'src/Entities/user.entity';
-import { ProductOrderEntity } from 'src/Entities/productOrder.entity';
-import { AddProductToOrderInterface } from 'src/Interfaces/productOrder-interface';
-import { serviceResult } from 'src/Interfaces/serviceReturn-interface';
-import { authService } from 'src/Services/authService';
-import { orderService } from 'src/Services/orderService';
-import { AuthErrorLackOfPrivilages } from 'src/utils/errors';
+import { UserEntity } from './../../src/Entities/user.entity';
+import { AddProductToOrderInterface } from './../../src/Interfaces/productOrder-interface';
+import { serviceResult } from './../../src/Interfaces/serviceReturn-interface';
+import { authService } from './../../src/Services/authService';
+import { orderService } from './../../src/Services/orderService';
+import { AuthErrorLackOfPrivilages } from './../../src/utils/errors';
+import { OrderDataInterface } from 'src/Interfaces/order-interface';
 
-const orderRouter = Router();
+const OrderRouter = Router();
 
-orderRouter
+OrderRouter.get('/list', async (req, res, next) => {
+  try {
+    const user: UserEntity = await authService.validate(req.cookies.jwt);
+
+    const result: serviceResult = await orderService.getAll(user);
+    res.status(result.status).json(result.data);
+    // [x]: Return list of user orders
+    // [x]: User mush be logged in
+  } catch (err) {
+    next(err);
+  }
+})
+  .get('/list-all', async (req, res, next) => {
+    try {
+      const user: UserEntity = await authService.validate(req.cookies.jwt);
+      if (!user.isAdmin) throw new AuthErrorLackOfPrivilages();
+
+      const result: serviceResult = await orderService.getAll(user, true);
+      res.status(result.status).json(result.data);
+      // [x]: Return list of all orders
+      // [x]: Only users with admin privilages can access this endpoint
+    } catch (err) {
+      next(err);
+    }
+  })
+  .get('/:id', async (req, res, next) => {
+    try {
+      const user: UserEntity = await authService.validate(req.cookies.jwt);
+
+      const result: serviceResult = await orderService.get(user, req.params.id);
+      res.status(result.status).json(result.data);
+      // [X]: Get single order details
+    } catch (err) {
+      next(err);
+    }
+  })
   .patch('/:orderId/position/:positionId', async (req, res, next) => {
     try {
       // [x] Admin only function
@@ -60,38 +95,16 @@ orderRouter
       next(err);
     }
   })
-  .get('/list', async (req, res, next) => {
+  .get('/:orderId/position/:positionId', async (req, res, next) => {
     try {
       const user: UserEntity = await authService.validate(req.cookies.jwt);
 
-      const result: serviceResult = await orderService.getAll(user);
+      const result: serviceResult = await orderService.getOrderPosition(
+        user,
+        req.params.orderId,
+        req.params.positionId
+      );
       res.status(result.status).json(result.data);
-      // [x]: Return list of user orders
-      // [x]: User mush be logged in
-    } catch (err) {
-      next(err);
-    }
-  })
-  .get('/list-all', async (req, res, next) => {
-    try {
-      const user: UserEntity = await authService.validate(req.cookies.jwt);
-      if (!user.isAdmin) throw new AuthErrorLackOfPrivilages();
-
-      const result: serviceResult = await orderService.getAll(user, true);
-      res.status(result.status).json(result.data);
-      // [x]: Return list of all orders
-      // [x]: Only users with admin privilages can access this endpoint
-    } catch (err) {
-      next(err);
-    }
-  })
-  .get('/:id', async (req, res, next) => {
-    try {
-      const user: UserEntity = await authService.validate(req.cookies.jwt);
-
-      const result: serviceResult = await orderService.get(user, req.params.id);
-      res.status(result.status).json(result.data);
-      // [X]: Get single order details
     } catch (err) {
       next(err);
     }
@@ -99,7 +112,7 @@ orderRouter
   .patch('/:id', async (req, res, next) => {
     try {
       const user: UserEntity = await authService.validate(req.cookies.jwt);
-      const orderData = req.body;
+      const orderData: OrderDataInterface = req.body;
 
       const result: serviceResult = await orderService.update(
         user,
@@ -120,32 +133,26 @@ orderRouter
       if (!user.isAdmin) throw new AuthErrorLackOfPrivilages();
 
       const result: serviceResult = await orderService.delete(req.params.id);
-      res.status(result.status).send(result.data);
+      res.status(result.status).json(result.data);
       // [x]: Remove single order
       // [x]: check if user is admin
     } catch (err) {
       next(err);
     }
   })
-  .put('/', async (req, res, next) => {
+  .post('/', async (req, res, next) => {
     try {
       const user: UserEntity = await authService.validate(req.cookies.jwt);
-      const products: AddProductToOrderInterface[] = req.body;
+      const products: [AddProductToOrderInterface] = req.body;
 
-      const result: serviceResult = await orderService.create(user);
+      const result: serviceResult = await orderService.create(user, products);
 
-      products.forEach(async (product) => {
-        await orderService.addProduct(
-          product.productId,
-          result.data['id'],
-          product.amount
-        );
-      });
-
-      res.status(result.status).send(result.data);
+      res.status(result.status).json(result.data);
       // [x]: Create new Order
       // [X]: Gets array of products
     } catch (err) {
       next(err);
     }
   });
+
+export { OrderRouter };

@@ -1,15 +1,18 @@
 import 'dotenv/config';
+
 import express from 'express';
 import { json } from 'express';
+
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
 import Log4js from './src/utils/logger';
 
 import { AuthRouter } from './src/rotuers/auth.router';
-import { errorHandler } from './src/utils/middlewares/ErrorHandler';
 import { ProductRouter } from './src/rotuers/product.router';
+import { OrderRouter } from './src/rotuers/order.router';
 
+import { errorHandler } from './src/utils/middlewares/ErrorHandler';
 import 'express-async-errors';
 
 const app = express();
@@ -27,6 +30,7 @@ app.use(cookieParser());
 
 app.use('/auth', AuthRouter);
 app.use('/product', ProductRouter);
+app.use('/order', OrderRouter);
 
 app.use(errorHandler);
 

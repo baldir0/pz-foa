@@ -45,6 +45,7 @@ Bellow you will find a list of endpoints, avaliable in API.
   - [Add Product](#Add-Product) - Add new product with passed params
   - [Delete Product](#Delete-Product) - Deletes given product
 - [Order](#Order)
+  - [Get order position](#get-order-position) - get single position of the order
   - [Update Order Position](#Update-order-position) - update single position in order
   - [Delete Order Position](#Delete-order-position) - delete single position from order
   - [Add Order Position](#Add-order-position) - add single position to order
@@ -292,8 +293,20 @@ Get single order
 - Result [Success]:
   ```json
   {
-    "order": Order,
-    "positions": Product[]
+    "order": {
+      "id": "order id",
+      "userId": "user id reference",
+      "createdAt": "time of creation",
+      "changedAt": "time of last change"
+    },
+    "positions": [
+      {
+        "id": "position id",
+        "orderId": "order id reference",
+        "productId": "id of product",
+        "amount": 10 // Amount
+      }
+    ]
   }
   ```
 - Result [Failed]:
@@ -312,9 +325,14 @@ Get list of user orders
 - Body: none
 - Result [Success]:
   ```json
-  {
-    Order[]
-  }
+  [
+    {
+      "id": "order id",
+      "userId": "user id reference",
+      "createdAt": "date of creation",
+      "changedAt": "date of change"
+    }
+  ]
   ```
 - Result [Failed]:
   ```json
@@ -332,9 +350,14 @@ Get list of all orders in system
 - Body: none
 - Result [Success]:
   ```json
-  {
-    Order[]
-  }
+  [
+    {
+      "id": "order id",
+      "userId": "user id reference",
+      "createdAt": "date of creation",
+      "changedAt": "date of change"
+    }
+  ]
   ```
 - Result [Failed]:
   ```json
@@ -349,11 +372,19 @@ Get list of all orders in system
 Update single order data.
 
 - Usage: `PATCH /order/:id`
-- Body: none
+- Body:
+  ```json
+  {
+    "userId": "new user id"
+  }
+  ```
 - Result [Success]:
   ```json
   {
-    UpdateResult
+    "orderId": "updated order id",
+    "newData": {
+      "userId": "new user id"
+    }
   }
   ```
 - Result [Failed]:
@@ -373,7 +404,9 @@ Delete single order
 - Result [Success]:
   ```json
   {
-    DeleteResult
+    {
+      "orderId": "id of deleted order"
+    }
   }
   ```
 - Result [Failed]:
@@ -388,12 +421,43 @@ Delete single order
 
 Creates new order
 
-- Usage: `PUT /order/:id`
+- Usage: `POST /order/`
+- Body:
+  ```json
+  [
+    {
+      "productId": "product id",
+      "amount": "amount of product"
+    }
+  ]
+  ```
+- Result [Success]:
+  ```json
+  {
+    "orderId": "id of created order"
+  }
+  ```
+- Result [Failed]:
+  ```json
+  {
+    "error": "error message"
+  }
+  ```
+- Required privilages: USER
+
+### Get order position
+
+Get single order position
+
+- Usage: `GET /order/:orderId/position/:positionId`
 - Body: none
 - Result [Success]:
   ```json
   {
-    InsertResult
+    "id": "55778600-fe95-408c-b3a1-1adcc5615ed7",
+    "orderId": "2fee29f4-5d43-4dff-a943-ec24c9bcdf0c",
+    "productId": "75ca6c19-f1b8-4665-a468-293b64b9674d",
+    "amount": 100
   }
   ```
 - Result [Failed]:
@@ -421,7 +485,7 @@ Add product to order
 - Result [Success]:
   ```json
   {
-    InsertResult
+    "productId": "inserted product id"
   }
   ```
 - Result [Failed]:
@@ -449,7 +513,8 @@ Update single position of the order
 - Result [Success]:
   ```json
   {
-    UpdateResult
+    "positionId": "id of affected position",
+    "updated": "new data"
   }
   ```
 - Result [Failed]:
@@ -469,7 +534,7 @@ Delete single position of the order
 - Result [Success]:
   ```json
   {
-    DeleteResult
+    "positionId": "Id of deleted position"
   }
   ```
 - Result [Failed]:

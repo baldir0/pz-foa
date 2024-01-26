@@ -43,7 +43,7 @@ orderRouter
       next(err);
     }
   })
-  .put('/:orderId/position/', async (req, res, next) => {
+  .post('/:orderId/position/', async (req, res, next) => {
     try {
       // [x] Admin only function
       const user: UserEntity = await authService.validate(req.cookies.jwt);

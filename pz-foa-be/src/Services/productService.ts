@@ -1,120 +1,127 @@
-import { NextFunction, Response } from 'express';
 import { ProductEntity } from '../Entities/product.entity';
 import { NewProductInterface } from '../Interfaces/product-interface';
 import { DB } from '../utils/database/database';
 import {
-  AuthError,
   AuthErrorLackOfPrivilages,
-  AuthErrorUnauthorized,
-  ProductError,
-  ProductErrorInsertionFailed,
   ProductErrorNotFound,
 } from '../utils/errors';
 import { Repository } from 'typeorm';
 import messages from '../data/en-EN.json';
 import { UserEntity } from '../Entities/user.entity';
+import { serviceResult } from 'src/Interfaces/serviceReturn-interface';
 
 class ProductService {
   constructor(
     private productRepo: Repository<ProductEntity> = DB.getRepository(
       ProductEntity
-    ),
-    private userRepo: Repository<UserEntity> = DB.getRepository(UserEntity)
+    )
   ) {}
 
-  public async create(
-    productData: NewProductInterface,
-    token: string,
-    res: Response,
-    next: NextFunction
-  ) {
-    try {
-      if (!token) {
-        return next(
-          new AuthErrorUnauthorized(messages.ERROR.INVALID_LOGIN_DATA)
-        );
-      }
+  public async get(productId: string): Promise<serviceResult> {
+    const result = await this.productRepo.findOne({
+      where: { id: productId },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        price: true,
+        avalaibleStocks: true,
+      },
+    });
 
-      const id = crypto.randomUUID();
-      const user = await this.userRepo.findOne({
-        select: { id: true },
-        where: { token: token },
-      });
+    if (result)
+      return {
+        status: 200,
+        data: result,
+      };
 
-      await this.productRepo.insert({
-        id,
-        ...productData,
-        createdBy: user.id,
-      });
-
-      res.status(201).json({ message: 'Product created!', productId: id });
-    } catch {
-      next(
-        new ProductErrorInsertionFailed(
-          messages.ERROR.PRODUCT_INSERTION_FAILURE
-        )
-      );
-    }
+    throw new ProductErrorNotFound();
   }
 
-  public async delete(productId: string, user: UserEntity, res: Response) {
+  public async getAll(): Promise<serviceResult> {
+    const result = await this.productRepo.findAndCount({
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        price: true,
+        avalaibleStocks: true,
+      },
+    });
+    if (result[1])
+      return {
+        status: 200,
+        data: result,
+      };
+
+    throw new ProductErrorNotFound();
+  }
+
+  public async create(
+    user: UserEntity,
+    productData: NewProductInterface
+  ): Promise<serviceResult> {
+    const id = crypto.randomUUID();
+
+    await this.productRepo.insert({
+      id,
+      ...productData,
+      createdBy: user.id,
+    });
+
+    return {
+      status: 201,
+      data: {
+        id,
+      },
+    };
+  }
+
+  public async update(
+    user: UserEntity,
+    productId: string,
+    productData: NewProductInterface
+  ): Promise<serviceResult> {
+    const result = await this.productRepo.update(
+      { id: productId, createdBy: user.id },
+      { ...productData, changedAt: new Date().toString() }
+    );
+
+    if (result.affected) {
+      return {
+        status: 200,
+        data: {
+          productId: productId,
+          updated: productData,
+        },
+      };
+    }
+
+    throw new ProductErrorNotFound();
+  }
+
+  public async delete(
+    user: UserEntity,
+    productId: string
+  ): Promise<serviceResult> {
     const selectResult = await this.productRepo.findOne({
       where: { id: productId, createdBy: user.isAdmin ? null : user.id },
       select: { id: true },
     });
+
     if (!selectResult) throw new AuthErrorLackOfPrivilages();
 
     const deleteResult = await this.productRepo.delete({ id: productId });
 
-    if (!deleteResult.affected) {
-      throw new ProductErrorNotFound(messages.ERROR.PRODUCT_NOT_FOUND);
-    }
-    res.status(200).json({ message: `Product ${productId} deleted!` });
-  }
+    if (deleteResult.affected)
+      return {
+        status: 200,
+        data: {
+          productId: productId,
+        },
+      };
 
-  public async get(productId: string, res: Response) {
-    try {
-      const result = await this.productRepo.findBy({ id: productId });
-      res.status(200).json({ product: result[0] });
-    } catch {
-      throw new ProductErrorNotFound(messages.ERROR.PRODUCT_NOT_FOUND);
-    }
-  }
-
-  public async update(
-    productId: string,
-    productData: NewProductInterface,
-    token: string,
-    res: Response,
-    next: NextFunction
-  ) {
-    try {
-      if (!token) next(new AuthError(messages.ERROR.UNAUTHORIZED_USER));
-
-      const user = await this.userRepo.findOne({
-        select: { id: true },
-        where: { token: token },
-      });
-      await this.productRepo.update(
-        { id: productId, createdBy: user.id },
-        { ...productData, changedAt: new Date().toString() }
-      );
-      res.status(200).json({
-        message: `Product ${productId} updated!`,
-        newData: productData,
-      });
-    } catch {
-      throw new ProductErrorNotFound(messages.ERROR.PRODUCT_NOT_FOUND);
-    }
-  }
-
-  public async getAll(res: Response) {
-    try {
-      const result = await this.productRepo.findAndCount();
-      res.status(200).json(result);
-    } catch {
-      throw new ProductError('Something went wrong!');
-    }
+    throw new ProductErrorNotFound(messages.ERROR.PRODUCT_NOT_FOUND);
   }
 }
 

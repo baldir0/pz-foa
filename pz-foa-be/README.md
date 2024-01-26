@@ -66,30 +66,30 @@ Login user to appliaction, creates JWT cookie used to authorization.
 - Usage: `POST /auth/login`
 - Body:
 
-```json
+  ```json
   {
     "email": "user-email-address", # Only one of email
     "login": "user-login", # or login is required
     "passwordHSW": "user-password",
   }
-```
+  ```
 
 - Result [Success]:
 
-```json
-{
-  "user": UserObject,
-  "message": "response message"
-}
-```
+  ```json
+  {
+    "user": UserObject,
+    "message": "response message"
+  }
+  ```
 
 - Result [Failed]:
 
-```json
-{
-  "error": "error message"
-}
-```
+  ```json
+  {
+    "error": "error message"
+  }
+  ```
 
 ### Logout
 
@@ -99,19 +99,19 @@ Logout user from application, clears client JWT cookie.
 - Body: none
 - Result [Success]:
 
-```json
-{
-  "data": "user logout message"
-}
-```
+  ```json
+  {
+    "data": "user logout message"
+  }
+  ```
 
 - Result [Failed]:
 
-```json
-{
-  "error": "error message"
-}
-```
+  ```json
+  {
+    "error": "error message"
+  }
+  ```
 
 ### Register
 
@@ -120,29 +120,29 @@ Creates new user, used to login.
 - Usage: `POST /auth/register`
 - Body:
 
-```json
-{
-  "login": "user login",
-  "email": "user email",
-  "passwordHSW": "user password"
-}
-```
+  ```json
+  {
+    "login": "user login",
+    "email": "user email",
+    "passwordHSW": "user password"
+  }
+  ```
 
 - Result [Success]:
 
-```json
-{
-  "data": "user register message"
-}
-```
+  ```json
+  {
+    "data": "user register message"
+  }
+  ```
 
 - Result [Failed]:
 
-```json
-{
-  "error": "error message"
-}
-```
+  ```json
+  {
+    "error": "error message"
+  }
+  ```
 
 ## Product
 
@@ -156,9 +156,15 @@ Get list of all products.
   ```json
   {
     [
-      products[],
-      itemCount
-    ]
+      {
+        "id": "product id",
+        "name": "product name",
+        "description": "product description",
+        "price": "product price",
+        "avalaibleStocks": 1000
+      }
+    ],
+    itemCount
   }
   ```
 - Result [Failed]:
@@ -178,7 +184,11 @@ Get single product details
 - Result [Success]:
   ```json
   {
-    "product": SingleProduct
+    "id": "product id",
+    "name": "product name",
+    "description": "product description",
+    "price": "product price",
+    "avalaibleStocks": "avalaible items - number"
   }
   ```
 - Result [Failed]:
@@ -191,7 +201,7 @@ Get single product details
 
 ### Update Product
 
-Update given product
+Update given product. Missed filed will not be updated.
 
 - Usage: `PATCH /product/:id`
 - Body:
@@ -206,12 +216,12 @@ Update given product
 - Result [Success]:
   ```json
   {
-    "message": "Product {product-id} updated!",
-    "newData": {
-      "name": "Product name",
-      "description": "Product description",
-      "price": "Product price",
-      "avalaibleStocks": "Amount of item"
+    "productId": "product id",
+    "updated": {
+      "name": "new product name",
+      "description": "new product description",
+      "price": "new product price",
+      "avalaibleStocks": "new amount of item"
     }
   }
   ```
@@ -225,7 +235,7 @@ Update given product
 
 ### Add Product
 
-Add new product to application
+Add new product to application. All fields are required.
 
 - Usage: `POST /product/`
 - Body:
@@ -240,8 +250,7 @@ Add new product to application
 - Result [Success]:
   ```json
   {
-    "message": "Product created!",
-    "productId": "Id of created product"
+    "id": "Id of created product"
   }
   ```
 - Result [Failed]:
@@ -254,14 +263,14 @@ Add new product to application
 
 ### Delete Product
 
-Delete product from application
+Delete product from application.
 
 - Usage: `DELETE /product/:id`
 - Body: none
 - Result [Success]:
   ```json
   {
-    "message": "Product {product-id} deleted!"
+    "productId": "deleted product id"
   }
   ```
 - Result [Failed]:

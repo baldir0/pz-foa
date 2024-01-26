@@ -1,7 +1,7 @@
 import { UserEntity } from '../Entities/user.entity';
 import { DB } from '../utils/database/database';
 import { Repository } from 'typeorm';
-import { JwtPayload, sign, verify } from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 import { JWTPayload } from '../utils/passwd/jwt';
 import { UserInterface } from '../Interfaces/user-interface';
 import { loginDataInterface } from '../Interfaces/loginData-interface';

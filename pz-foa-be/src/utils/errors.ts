@@ -42,5 +42,11 @@ export class ProductError extends ErrorBase {
   }
 }
 
-export class ProductErrorInsertionFailed extends ProductError {}
-export class ProductErrorNotFound extends ProductError {}
+export class ProductErrorInsertionFailed extends ProductError {
+  public message: string = messages.ERROR.PRODUCT_INSERTION_FAILURE;
+  public statusCode: number = 400;
+}
+export class ProductErrorNotFound extends ProductError {
+  public message: string = messages.ERROR.PRODUCT_NOT_FOUND;
+  public statusCode: number = 404;
+}

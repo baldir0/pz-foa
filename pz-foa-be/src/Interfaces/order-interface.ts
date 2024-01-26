@@ -4,3 +4,7 @@ export interface OrderInterface {
   createdAt: string;
   changedAt: string;
 }
+
+export interface OrderDataInterface {
+  userId: string;
+}

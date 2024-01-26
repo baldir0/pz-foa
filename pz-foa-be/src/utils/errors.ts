@@ -42,5 +42,29 @@ export class ProductError extends ErrorBase {
   }
 }
 
-export class ProductErrorInsertionFailed extends ProductError {}
-export class ProductErrorNotFound extends ProductError {}
+export class ProductErrorInsertionFailed extends ProductError {
+  public message: string = messages.ERROR.PRODUCT_INSERTION_FAILURE;
+  public statusCode: number = 400;
+}
+export class ProductErrorNotFound extends ProductError {
+  public message: string = messages.ERROR.PRODUCT_NOT_FOUND;
+  public statusCode: number = 404;
+}
+
+export class OrderError extends ErrorBase {
+  public name: string = 'OrderError';
+  public statusCode: number = 400;
+  constructor(args?: string) {
+    super(args);
+  }
+}
+
+export class OrderErrorNotFound extends OrderError {
+  public message: string = messages.ERROR.ORDER_NOT_FOUND;
+  public statusCode: number = 404;
+}
+
+export class OrderErrorInsertionFailed extends OrderError {
+  public message: string = messages.ERROR.PRODUCT_INSERTION_FAILURE;
+  public statusCode: number = 400;
+}

@@ -1,19 +1,19 @@
-import { UserEntity } from '../../Entities/user.entity';
-import { DB } from '../../utils/database/database';
+import { UserEntity } from '../Entities/user.entity';
+import { DB } from '../utils/database/database';
 import { Repository } from 'typeorm';
-import { JwtPayload, sign, verify } from 'jsonwebtoken';
-import { JWTPayload } from '../../utils/passwd/jwt';
-import { UserInterface } from '../../Interfaces/user-interface';
-import { loginDataInterface } from '../../Interfaces/loginData-interface';
+import { sign, verify } from 'jsonwebtoken';
+import { JWTPayload } from '../utils/passwd/jwt';
+import { UserInterface } from '../Interfaces/user-interface';
+import { loginDataInterface } from '../Interfaces/loginData-interface';
 import { Response } from 'express';
 import {
   AuthError,
   AuthErrorNotFound,
   AuthErrorUnauthorized,
   AuthErrorUserExists,
-} from '../../utils/errors';
-import { hashPWD } from '../../utils/passwd/hashPWD';
-import messages from '../../../src/data/en-EN.json';
+} from '../utils/errors';
+import { hashPWD } from '../utils/passwd/hashPWD';
+import messages from '../data/en-EN.json';
 
 class AuthService {
   constructor(

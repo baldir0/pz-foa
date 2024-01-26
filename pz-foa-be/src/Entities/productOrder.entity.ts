@@ -1,8 +1,8 @@
-import { userOrdersInterface } from 'src/Interfaces/userOrder-interface';
+import { ProductOrderInterface } from 'src/Interfaces/productOrder-interface';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('user_orders')
-export class UserOrdersEntity implements userOrdersInterface {
+@Entity('product_order')
+export class ProductOrderEntity implements ProductOrderInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 
@@ -11,9 +11,6 @@ export class UserOrdersEntity implements userOrdersInterface {
 
   @Column({ name: 'PRODUCT_ID', type: 'varchar', length: 36 })
   productId: string;
-
-  @Column({ name: 'PRICE', type: 'decimal', precision: 10, scale: 2 })
-  price: number;
 
   @Column({ name: 'AMOUNT', type: 'int', precision: 5 })
   amount: number;

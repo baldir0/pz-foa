@@ -6,6 +6,7 @@ export class ProfileEntity implements ProfileInterface {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
   id: string;
 
+  @Column({ name: 'USER_ID', type: 'varchar', length: 36 })
   @Column({ name: 'ADDRESS', type: 'varchar', length: 255 })
   address: string;
 

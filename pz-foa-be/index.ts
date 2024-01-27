@@ -8,9 +8,9 @@ import cookieParser from 'cookie-parser';
 
 import Log4js from './src/utils/logger';
 
-import { AuthRouter } from './src/rotuers/auth.router';
-import { ProductRouter } from './src/rotuers/product.router';
-import { OrderRouter } from './src/rotuers/order.router';
+import { AuthRouter } from './src/rotuers/auth/auth.router';
+import { ProductRouter } from './src/rotuers/product/product.router';
+import { OrderRouter } from './src/rotuers/order/order.router';
 
 import { errorHandler } from './src/utils/middlewares/ErrorHandler';
 import 'express-async-errors';

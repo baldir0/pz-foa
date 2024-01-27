@@ -25,6 +25,17 @@ export class AuthErrorInvalidLoginData extends AuthError {
   public message: string = messages.ERROR.INVALID_LOGIN_DATA;
   public statusCode: number = 400;
 }
+
+export class AuthErrorMissingLogin extends AuthError {
+  public message: string = messages.ERROR.MISSING_LOGIN_OR_EMAIL;
+  public statusCode: number = 400;
+}
+
+export class AuthErrorMissingPassword extends AuthError {
+  public message: string = messages.ERROR.MISSING_PASSWORD;
+  public statusCode: number = 400;
+}
+
 export class AuthErrorUserExists extends AuthError {
   public message: string = messages.ERROR.USER_ALREADY_EXIST;
   public statusCode: number = 409;
@@ -67,4 +78,57 @@ export class OrderErrorNotFound extends OrderError {
 export class OrderErrorInsertionFailed extends OrderError {
   public message: string = messages.ERROR.PRODUCT_INSERTION_FAILURE;
   public statusCode: number = 400;
+}
+
+export enum DataTransferErrorType {
+  DTE_EMPTY_FIELD,
+  DTE_INVALID_EMAIL,
+  DTE_TOO_LONG,
+  DTE_INVALID_TYPE,
+}
+
+export class DataTransferError extends ErrorBase {
+  public name: string = 'DataTransferError';
+  public statusCode: number = 400;
+
+  public static dispatch(error: DataTransferErrorType, field: string) {
+    switch (error) {
+      case DataTransferErrorType.DTE_EMPTY_FIELD:
+        throw new DataTransferError_EmptyField(field);
+      case DataTransferErrorType.DTE_INVALID_EMAIL:
+        throw new DataTransferError_InvalidEmail();
+      case DataTransferErrorType.DTE_INVALID_TYPE:
+        throw new DataTransferError_InvalidType(field);
+      case DataTransferErrorType.DTE_TOO_LONG:
+        throw new DataTransferError_TooLong(field);
+    }
+  }
+}
+
+export class DataTransferError_EmptyField extends DataTransferError {
+  public message: string = messages.ERROR.DATA_TRANSFER_MISSING_FIELD;
+  constructor(field: string) {
+    super();
+    this.message = this.message + field;
+  }
+}
+
+export class DataTransferError_InvalidEmail extends DataTransferError {
+  public message: string = messages.ERROR.DATA_TRANSFER_INVALID_EMAIL;
+}
+
+export class DataTransferError_TooLong extends DataTransferError {
+  public message: string = messages.ERROR.DATA_TRANSFER_VALUE_IS_TOO_LONG;
+  constructor(field: string) {
+    super();
+    this.message = field + this.message;
+  }
+}
+
+export class DataTransferError_InvalidType extends DataTransferError {
+  public message: string = messages.ERROR.DATA_TRANSFER_INVALID_TYPE;
+  constructor(field: string) {
+    super();
+    this.message = field + this.message;
+  }
 }

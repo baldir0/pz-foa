@@ -20,15 +20,19 @@ export const RequestBodyValidator = <T extends object>(
       const validationError: ValidationError = (
         await validate(validatorObject, validatorOption)
       )[0];
-
       if (validationError) {
-        const error = Object.values(validationError.contexts)[0]['error'];
+        const target =
+          validationError.contexts ??
+          validationError.children[0].children[0].contexts;
+
+        const error = Object.values(target)[0]['error'];
         const field = validationError.property;
         DataTransferError.dispatch(error, field);
       }
 
       next();
     } catch (err) {
+      console.log(err);
       next(err);
     }
   };

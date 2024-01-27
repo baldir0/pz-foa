@@ -7,7 +7,10 @@ import {
 import { OrderEntity } from './../../src/Entities/order.entity';
 import { ProductOrderEntity } from './../../src/Entities/productOrder.entity';
 import { UserEntity } from './../../src/Entities/user.entity';
-import { OrderDataInterface } from './../../src/Interfaces/order-interface';
+import {
+  NewOrderDataInterface,
+  OrderDataInterface,
+} from './../../src/Interfaces/order-interface';
 import { AddProductToOrderInterface } from './../../src/Interfaces/productOrder-interface';
 import { serviceResult } from './../../src/Interfaces/serviceReturn-interface';
 import { DB } from './../../src/utils/database/database';
@@ -92,6 +95,7 @@ class OrderService {
 
   public async delete(orderId: string): Promise<serviceResult> {
     const result = await this.orderRepo.delete({ id: orderId });
+    const result2 = await this.productOrderRepo.delete({ orderId });
 
     return {
       status: 200,
@@ -103,16 +107,36 @@ class OrderService {
 
   public async create(
     user: UserEntity,
-    products: [AddProductToOrderInterface]
+    data: NewOrderDataInterface
   ): Promise<serviceResult> {
-    const result = await this.orderRepo.insert({ userId: user.id });
+    const { firstName, lastName, address } = data;
+    const products: AddProductToOrderInterface[] = data.products;
 
-    if (products.length)
-      products.forEach(async (product) => {
+    const result = await this.orderRepo.insert({
+      userId: user.id,
+      address,
+      firstName,
+      lastName,
+    });
+
+    products
+      .reduce((pv, cv): AddProductToOrderInterface[] => {
+        const idx = pv.findIndex((v) => cv.productId === v.productId);
+        if (idx < 0) {
+          pv.push(cv);
+          return pv;
+        }
+
+        pv[idx].amount += cv.amount;
+
+        return pv;
+      }, [] as AddProductToOrderInterface[])
+      .forEach(async (product) => {
         await this.addProduct(
           product.productId,
           result.identifiers[0].id,
-          product.amount
+          product.amount,
+          product.price
         );
       });
 
@@ -127,13 +151,15 @@ class OrderService {
   public async addProduct(
     productId: string,
     orderId: string,
-    amount: number
+    amount: number,
+    price: number
   ): Promise<serviceResult> {
     const result = await this.productOrderRepo.insert({
       id: crypto.randomUUID(),
       amount,
       orderId,
       productId,
+      price,
     });
 
     if (result)

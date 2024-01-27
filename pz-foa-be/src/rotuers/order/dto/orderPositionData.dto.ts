@@ -29,4 +29,19 @@ export class OrderPositionDataDTO implements AddProductToOrderInterface {
     },
   })
   amount: number;
+
+  @IsNotEmpty({
+    context: {
+      error: DataTransferErrorType.DTE_EMPTY_FIELD,
+    },
+  })
+  @IsNumber(
+    { maxDecimalPlaces: 2 },
+    {
+      context: {
+        error: DataTransferErrorType.DTE_INVALID_TYPE,
+      },
+    }
+  )
+  price: number;
 }

@@ -9,7 +9,13 @@ export class OrderEntity implements OrderInterface {
   @Column({ name: 'USER_ID', type: 'varchar', length: 36 })
   userId: string;
 
-  @Column({ name: 'ADDRESS', type: 'text' })
+  @Column({ name: 'FIRST_NAME', type: 'varchar', length: 128 })
+  firstName: string;
+
+  @Column({ name: 'LAST_NAME', type: 'varchar', length: 128 })
+  lastName: string;
+
+  @Column({ name: 'ADDRESS', type: 'varchar', length: 1024 })
   address: string;
 
   @Column({

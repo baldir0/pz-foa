@@ -9,6 +9,7 @@ import { RequestBodyValidator } from '../../utils/middlewares/RequestBodyValidat
 import { OrderPositionDataDTO } from './dto/orderPositionData.dto';
 import { OrderDataDTO } from './dto/orderData.dto';
 import { NewOrderDataDTO } from './dto/newOrderData.dto';
+import { NewOrderDataInterface } from '../../Interfaces/order-interface';
 
 const OrderRouter = Router();
 
@@ -96,7 +97,8 @@ OrderRouter.get('/list', async (req, res, next) => {
         const result: serviceResult = await orderService.addProduct(
           productData.productId,
           req.params.orderId,
-          productData.amount
+          productData.amount,
+          productData.price
         );
         res.status(result.status).json(result.data);
       } catch (err) {
@@ -150,10 +152,11 @@ OrderRouter.get('/list', async (req, res, next) => {
   })
   .post('/', RequestBodyValidator(NewOrderDataDTO), async (req, res, next) => {
     try {
+      // TODO: ADD ADDRESS FIELD
       const user: UserEntity = await authService.validate(req.cookies.jwt);
-      const products: [AddProductToOrderInterface] = req.body;
+      const data: NewOrderDataInterface = req.body;
 
-      const result: serviceResult = await orderService.create(user, products);
+      const result: serviceResult = await orderService.create(user, data);
 
       res.status(result.status).json(result.data);
       // [x]: Create new Order

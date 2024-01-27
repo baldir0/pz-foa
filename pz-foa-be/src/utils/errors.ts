@@ -107,6 +107,7 @@ export class DataTransferError extends ErrorBase {
 
 export class DataTransferError_EmptyField extends DataTransferError {
   public message: string = messages.ERROR.DATA_TRANSFER_MISSING_FIELD;
+  public statusCode: number = 400;
   constructor(field: string) {
     super();
     this.message = this.message + field;
@@ -115,10 +116,12 @@ export class DataTransferError_EmptyField extends DataTransferError {
 
 export class DataTransferError_InvalidEmail extends DataTransferError {
   public message: string = messages.ERROR.DATA_TRANSFER_INVALID_EMAIL;
+  public statusCode: number = 400;
 }
 
 export class DataTransferError_TooLong extends DataTransferError {
   public message: string = messages.ERROR.DATA_TRANSFER_VALUE_IS_TOO_LONG;
+  public statusCode: number = 400;
   constructor(field: string) {
     super();
     this.message = field + this.message;
@@ -127,6 +130,7 @@ export class DataTransferError_TooLong extends DataTransferError {
 
 export class DataTransferError_InvalidType extends DataTransferError {
   public message: string = messages.ERROR.DATA_TRANSFER_INVALID_TYPE;
+  public statusCode: number = 400;
   constructor(field: string) {
     super();
     this.message = field + this.message;

@@ -1,4 +1,10 @@
-import { IsEmpty, IsUUID } from 'class-validator';
+import {
+  IsEmpty,
+  IsNotEmpty,
+  IsString,
+  IsUUID,
+  MaxLength,
+} from 'class-validator';
 import { OrderDataInterface } from './../../../Interfaces/order-interface';
 import { DataTransferErrorType } from './../../../utils/errors';
 
@@ -14,4 +20,50 @@ export class OrderDataDTO implements OrderDataInterface {
     },
   })
   userId: string;
+
+  @IsNotEmpty({
+    context: {
+      error: DataTransferErrorType.DTE_EMPTY_FIELD,
+    },
+  })
+  @IsString({
+    context: {
+      error: DataTransferErrorType.DTE_INVALID_TYPE,
+    },
+  })
+  @MaxLength(128, {
+    context: {
+      error: DataTransferErrorType.DTE_TOO_LONG,
+    },
+  })
+  firstName: string;
+
+  @IsNotEmpty({
+    context: {
+      error: DataTransferErrorType.DTE_EMPTY_FIELD,
+    },
+  })
+  @IsString({
+    context: {
+      error: DataTransferErrorType.DTE_INVALID_TYPE,
+    },
+  })
+  @MaxLength(128, {
+    context: {
+      error: DataTransferErrorType.DTE_TOO_LONG,
+    },
+  })
+  lastName: string;
+
+  @IsNotEmpty({
+    context: {
+      error: DataTransferErrorType.DTE_EMPTY_FIELD,
+    },
+  })
+  @IsString({
+    context: {
+      error: DataTransferErrorType.DTE_INVALID_TYPE,
+    },
+  })
+  address: string;
 }

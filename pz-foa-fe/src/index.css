@@ -1,3 +1,4 @@
+/*
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -66,3 +67,60 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+*/
+
+/* main.css */
+
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+}
+
+nav {
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+li {
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.login-options {
+  display: flex;
+}
+
+.login-options span {
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+/* LoginForm.css, RegisterForm.css, ForgotPasswordForm.css, AddProductForm.css, ProductViewForm.css, UserProfile.css */
+
+/* Dostosuj styl formularzy według potrzeb */
+
+/* Home.css */
+
+div {
+  margin-top: 50px; /* Dodaj odstęp pod menu */
+}
+
+/* ProduktList.css, OrdersList.css */
+
+/* Dostosuj styl listy produktów i zamówień */
+
+/* Dodaj odpowiednie klasy do formularzy i importuj te style w odpowiednich plikach */

@@ -1,35 +1,58 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// Home.js
+import React, { useState } from "react";
+import LoginForm from "./components/LoginForm";
+import RegisterForm from "./components/RegisterForm";
+import ForgotPasswordForm from "./components/ForgotPasswordForm";
+import ProductList from "./components/ProductList";
+import OrdersList from "./components/OrdersList";
+import AddProductForm from "./components/AddProductForm"; // Dodaj import
 
-function App() {
-  const [count, setCount] = useState(0)
+const Home = () => {
+  const [currentPage, setCurrentPage] = useState("login");
+
+  const navigateTo = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div>
+      <nav>
+        <ul>
+          <li onClick={() => navigateTo("products")}>Lista Produktów</li>
+          <li onClick={() => navigateTo("orders")}>Lista Zamówień</li>
+          <li onClick={() => navigateTo("profile")}>Profil Użytkownika</li>
+          <li onClick={() => navigateTo("addProduct")}>
+            Dodaj nowy produkt
+          </li>{" "}
+          {/* Dodaj nową opcję */}
+        </ul>
+        <div className="login-options">
+          {currentPage !== "login" && (
+            <span onClick={() => navigateTo("login")}>Zaloguj</span>
+          )}
+          {currentPage !== "register" && (
+            <span onClick={() => navigateTo("register")}>Zarejestruj się</span>
+          )}
+        </div>
+      </nav>
+      {currentPage === "login" && (
+        <LoginForm
+          onRegisterClick={() => navigateTo("register")}
+          onForgotPasswordClick={() => navigateTo("forgotPassword")}
+        />
+      )}
+      {currentPage === "register" && (
+        <RegisterForm onBackToLoginClick={() => navigateTo("login")} />
+      )}
+      {currentPage === "forgotPassword" && (
+        <ForgotPasswordForm onBackToLoginClick={() => navigateTo("login")} />
+      )}
+      {currentPage === "products" && <ProductList />}
+      {currentPage === "orders" && <OrdersList />}
+      {currentPage === "addProduct" && <AddProductForm />}{" "}
+      {/* Dodaj formularz dla nowej opcji */}
+    </div>
+  );
+};
 
-export default App
+export default Home;

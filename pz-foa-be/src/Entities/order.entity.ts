@@ -9,10 +9,18 @@ export class OrderEntity implements OrderInterface {
   @Column({ name: 'USER_ID', type: 'varchar', length: 36 })
   userId: string;
 
+  @Column({ name: 'FIRST_NAME', type: 'varchar', length: 128 })
+  firstName: string;
+
+  @Column({ name: 'LAST_NAME', type: 'varchar', length: 128 })
+  lastName: string;
+
+  @Column({ name: 'ADDRESS', type: 'varchar', length: 1024 })
+  address: string;
+
   @Column({
     name: 'CREATED_AT',
     type: 'timestamp',
-    nullable: true,
     default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: string;
@@ -20,7 +28,6 @@ export class OrderEntity implements OrderInterface {
   @Column({
     name: 'CHANGED_AT',
     type: 'timestamp',
-    nullable: true,
     default: () => 'CURRENT_TIMESTAMP',
   })
   changedAt: string;

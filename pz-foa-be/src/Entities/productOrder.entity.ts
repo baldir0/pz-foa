@@ -14,4 +14,7 @@ export class ProductOrderEntity implements ProductOrderInterface {
 
   @Column({ name: 'AMOUNT', type: 'int', precision: 5 })
   amount: number;
+
+  @Column({ name: 'PRICE', type: 'decimal', precision: 10, scale: 2 })
+  price: number;
 }

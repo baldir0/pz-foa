@@ -69,9 +69,9 @@ Login user to appliaction, creates JWT cookie used to authorization.
 
   ```json
   {
-    "email": "user-email-address", # Only one of email
-    "login": "user-login", # or login is required
-    "passwordHSW": "user-password",
+    "email": "user-email-address", // Only one of email
+    "login": "user-login", // or login is required
+    "passwordHSW": "user-password"
   }
   ```
 
@@ -165,7 +165,7 @@ Get list of all products.
         "avalaibleStocks": 1000
       }
     ],
-    itemCount
+    1 // item count
   }
   ```
 - Result [Failed]:
@@ -375,7 +375,10 @@ Update single order data.
 - Body:
   ```json
   {
-    "userId": "new user id"
+    "userId": "new user id",
+    "firstName": "first name",
+    "lastName": "last name",
+    "address": "address"
   }
   ```
 - Result [Success]:
@@ -383,7 +386,10 @@ Update single order data.
   {
     "orderId": "updated order id",
     "newData": {
-      "userId": "new user id"
+      "userId": "new user id",
+      "firstName": "new first name",
+      "lastName": "new last name",
+      "address": "address"
     }
   }
   ```
@@ -424,12 +430,18 @@ Creates new order
 - Usage: `POST /order/`
 - Body:
   ```json
-  [
-    {
-      "productId": "product id",
-      "amount": "amount of product"
-    }
-  ]
+  {
+    "address": "delivery address",
+    "firstName": "user first name",
+    "lastName": "user last name",
+    "products": [
+      {
+        "productId": "product id",
+        "amount": "amount of product",
+        "price": "product price"
+      }
+    ]
+  }
   ```
 - Result [Success]:
   ```json
@@ -454,10 +466,11 @@ Get single order position
 - Result [Success]:
   ```json
   {
-    "id": "55778600-fe95-408c-b3a1-1adcc5615ed7",
-    "orderId": "2fee29f4-5d43-4dff-a943-ec24c9bcdf0c",
-    "productId": "75ca6c19-f1b8-4665-a468-293b64b9674d",
-    "amount": 100
+    "id": "position id",
+    "orderId": "order id",
+    "productId": "product id",
+    "amount": 100, // amount of product
+    "price": 12.99 // product pirce, 2 decimal points
   }
   ```
 - Result [Failed]:
@@ -478,7 +491,8 @@ Add product to order
   ```json
   {
     "productId": "id of added product",
-    "amount": "amount of product"
+    "amount": "amount of product",
+    "price": 12.99 // product price
   }
   ```
 
@@ -506,7 +520,8 @@ Update single position of the order
   ```json
   {
     "productId": "new product id",
-    "amount": "new product amount"
+    "amount": "new product amount",
+    "price": 12.99 // new product price
   }
   ```
 

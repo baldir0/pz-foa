@@ -3,9 +3,10 @@ export interface ProductOrderInterface {
   orderId: string;
   productId: string;
   amount: number;
+  price: number;
 }
 
 export type AddProductToOrderInterface = Omit<
   ProductOrderInterface,
-  'id' | 'orderId' | 'price'
+  'id' | 'orderId'
 >;

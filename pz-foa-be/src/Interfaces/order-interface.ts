@@ -20,3 +20,10 @@ export interface NewOrderDataInterface {
   lastName: string;
   products: OrderPositionDataDTO[];
 }
+
+export interface UpdateOrderDataInterface {
+  userId?: string;
+  firstName?: string;
+  lastName?: string;
+  address?: string;
+}

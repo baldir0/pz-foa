@@ -1,6 +1,5 @@
 import {
   AuthErrorLackOfPrivilages,
-  OrderError,
   OrderErrorInsertionFailed,
   OrderErrorNotFound,
 } from './../utils/errors';
@@ -9,7 +8,7 @@ import { ProductOrderEntity } from './../../src/Entities/productOrder.entity';
 import { UserEntity } from './../../src/Entities/user.entity';
 import {
   NewOrderDataInterface,
-  OrderDataInterface,
+  UpdateOrderDataInterface,
 } from './../../src/Interfaces/order-interface';
 import { AddProductToOrderInterface } from './../../src/Interfaces/productOrder-interface';
 import { serviceResult } from './../../src/Interfaces/serviceReturn-interface';
@@ -61,7 +60,7 @@ class OrderService {
   public async update(
     user: UserEntity,
     orderId: string,
-    orderData: OrderDataInterface
+    orderData: UpdateOrderDataInterface
   ): Promise<serviceResult> {
     let result;
     if (user.isAdmin) {
@@ -112,6 +111,8 @@ class OrderService {
     const { firstName, lastName, address } = data;
     const products: AddProductToOrderInterface[] = data.products;
 
+    if (products.length < 1) throw new OrderErrorInsertionFailed();
+
     const result = await this.orderRepo.insert({
       userId: user.id,
       address,
@@ -154,8 +155,9 @@ class OrderService {
     amount: number,
     price: number
   ): Promise<serviceResult> {
+    const positionId = crypto.randomUUID();
     const result = await this.productOrderRepo.insert({
-      id: crypto.randomUUID(),
+      id: positionId,
       amount,
       orderId,
       productId,
@@ -164,8 +166,9 @@ class OrderService {
 
     if (result)
       return {
-        status: 200,
+        status: 201,
         data: {
+          positionId: positionId,
           productId: productId,
         },
       };

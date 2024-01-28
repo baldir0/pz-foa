@@ -8,6 +8,7 @@ import { AuthErrorLackOfPrivilages } from '../../utils/errors';
 import { RequestBodyValidator } from '../../utils/middlewares/RequestBodyValidator';
 import { OrderPositionDataDTO } from './dto/orderPositionData.dto';
 import { OrderDataDTO } from './dto/orderData.dto';
+import { UpdateOrderDataDTO } from './dto/updateOrderData.dto';
 import { NewOrderDataDTO } from './dto/newOrderData.dto';
 import { NewOrderDataInterface } from '../../Interfaces/order-interface';
 
@@ -120,23 +121,27 @@ OrderRouter.get('/list', async (req, res, next) => {
       next(err);
     }
   })
-  .patch('/:id', RequestBodyValidator(OrderDataDTO), async (req, res, next) => {
-    try {
-      const user: UserEntity = await authService.validate(req.cookies.jwt);
+  .patch(
+    '/:id',
+    RequestBodyValidator(UpdateOrderDataDTO),
+    async (req, res, next) => {
+      try {
+        const user: UserEntity = await authService.validate(req.cookies.jwt);
 
-      const result: serviceResult = await orderService.update(
-        user,
-        req.params.id,
-        req.body
-      );
-      res.status(result.status).json(result.data);
-      // [x]: Update single order
-      // [x]: check is user the admin
-      // [x]: check is user the owner
-    } catch (err) {
-      next(err);
+        const result: serviceResult = await orderService.update(
+          user,
+          req.params.id,
+          req.body
+        );
+        res.status(result.status).json(result.data);
+        // [x]: Update single order
+        // [x]: check is user the admin
+        // [x]: check is user the owner
+      } catch (err) {
+        next(err);
+      }
     }
-  })
+  )
   .delete('/:id', async (req, res, next) => {
     try {
       const user: UserEntity = await authService.validate(req.cookies.jwt);

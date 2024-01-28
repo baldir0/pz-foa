@@ -29,6 +29,7 @@ class ProductService {
         description: true,
         price: true,
         avalaibleStocks: true,
+        imgSrc: true,
       },
     });
 

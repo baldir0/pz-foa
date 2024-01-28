@@ -7,3 +7,9 @@ export interface UserInterface {
   changedAt: string;
   token: string;
 }
+
+export interface UserRegisterInterface {
+  login: string;
+  passwordHSW: string;
+  email: string;
+}

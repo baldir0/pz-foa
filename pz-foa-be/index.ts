@@ -13,10 +13,13 @@ import { ProductRouter } from './src/rotuers/product/product.router';
 import { OrderRouter } from './src/rotuers/order/order.router';
 
 import { errorHandler } from './src/utils/middlewares/ErrorHandler';
+import { connect } from './src/utils/database/database';
 import 'express-async-errors';
 
 const app = express();
 const logger = Log4js.getLogger('Main');
+
+connect();
 
 app.use(
   cors({

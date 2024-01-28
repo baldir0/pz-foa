@@ -1,8 +1,8 @@
 import { MaxLength, IsString, IsNotEmpty, IsEmail } from 'class-validator';
 import { DataTransferErrorType } from './../../../utils/errors';
-import { registerDataInterface } from './../../../Interfaces/registerData-Interface';
+import { UserRegisterInterface } from './../../../Interfaces/user-interface';
 
-export class AuthRegisterDTO implements registerDataInterface {
+export class AuthRegisterDTO implements UserRegisterInterface {
   @MaxLength(255)
   @IsString({
     context: {

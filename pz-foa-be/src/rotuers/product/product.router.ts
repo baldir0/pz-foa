@@ -1,5 +1,8 @@
 import { Router } from 'express';
-import { NewProductInterface } from '../../Interfaces/product-interface';
+import {
+  NewProductInterface,
+  UpdateProductInterface,
+} from '../../Interfaces/product-interface';
 import { productService } from '../../Services/productService';
 import { authService } from '../../Services/authService';
 import { serviceResult } from '../../Interfaces/serviceReturn-interface';
@@ -45,7 +48,7 @@ ProductRouter.get('/list', async (req, res, next) => {
         const token = req.cookies.jwt;
         const user = await authService.validate(token);
         const id: string = req.params.id;
-        const data: NewProductInterface = req.body;
+        const data: UpdateProductInterface = req.body;
         const result: serviceResult = await productService.update(
           user,
           id,

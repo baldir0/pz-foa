@@ -81,7 +81,11 @@ class AuthService {
   }
 
   public async logout(token: string): Promise<serviceResult> {
-    const user = await this.userRepo.findOneBy({ token });
+    const { id }: JWTPayload = verify(
+      token,
+      process.env.AUTH_SECRET
+    ) as JWTPayload;
+    const user = await this.userRepo.findOneBy({ token: id });
     if (!user) throw new AuthErrorUnauthorized();
     return {
       status: 200,

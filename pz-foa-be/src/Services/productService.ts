@@ -1,5 +1,8 @@
 import { ProductEntity } from '../Entities/product.entity';
-import { NewProductInterface } from '../Interfaces/product-interface';
+import {
+  NewProductInterface,
+  UpdateProductInterface,
+} from '../Interfaces/product-interface';
 import { DB } from '../utils/database/database';
 import {
   AuthErrorLackOfPrivilages,
@@ -46,6 +49,7 @@ class ProductService {
         description: true,
         price: true,
         avalaibleStocks: true,
+        imgSrc: true,
       },
     });
     if (result[1])
@@ -80,7 +84,7 @@ class ProductService {
   public async update(
     user: UserEntity,
     productId: string,
-    productData: NewProductInterface
+    productData: UpdateProductInterface
   ): Promise<serviceResult> {
     const result = await this.productRepo.update(
       { id: productId, createdBy: user.id },
@@ -96,7 +100,6 @@ class ProductService {
         },
       };
     }
-
     throw new ProductErrorNotFound();
   }
 

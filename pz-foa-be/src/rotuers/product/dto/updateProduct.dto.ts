@@ -1,15 +1,16 @@
 import {
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   IsUrl,
   Max,
   MaxLength,
 } from 'class-validator';
-import { NewProductInterface } from './../../../Interfaces/product-interface';
+import { UpdateProductInterface } from './../../../Interfaces/product-interface';
 import { DataTransferErrorType } from './../../../utils/errors';
 
-export class NewProductDTO implements NewProductInterface {
+export class UpdateProductDTO implements UpdateProductInterface {
   @IsNotEmpty({
     context: {
       error: DataTransferErrorType.DTE_EMPTY_FIELD,
@@ -25,6 +26,7 @@ export class NewProductDTO implements NewProductInterface {
       error: DataTransferErrorType.DTE_TOO_LONG,
     },
   })
+  @IsOptional()
   name: string;
 
   @IsNotEmpty({
@@ -42,6 +44,7 @@ export class NewProductDTO implements NewProductInterface {
       error: DataTransferErrorType.DTE_TOO_LONG,
     },
   })
+  @IsOptional()
   description: string;
 
   @IsNotEmpty({
@@ -62,6 +65,7 @@ export class NewProductDTO implements NewProductInterface {
       error: DataTransferErrorType.DTE_TOO_LONG,
     },
   })
+  @IsOptional()
   price: number;
 
   @IsNotEmpty({
@@ -82,6 +86,7 @@ export class NewProductDTO implements NewProductInterface {
       error: DataTransferErrorType.DTE_TOO_LONG,
     },
   })
+  @IsOptional()
   avalaibleStocks: number;
 
   @MaxLength(255, {
@@ -97,5 +102,6 @@ export class NewProductDTO implements NewProductInterface {
       },
     }
   )
-  imgSrc: string;
+  @IsOptional()
+  imgSrc?: string;
 }

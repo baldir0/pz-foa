@@ -18,6 +18,9 @@ export class ProductEntity implements ProductInterface {
   @Column({ name: 'AVL_STOCK', type: 'int', precision: 5 })
   avalaibleStocks: number;
 
+  @Column({ name: 'IMG_SRC', type: 'varchar', length: 255 })
+  imgSrc: string;
+
   @Column({
     name: 'CREATED_AT',
     type: 'datetime',

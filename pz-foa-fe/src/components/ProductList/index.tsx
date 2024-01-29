@@ -6,21 +6,24 @@ const products = [
   {
     id: 1,
     name: "Produkt 1",
-    image: "https://example.com/image1.jpg",
+    image:
+      "https://i.pinimg.com/564x/3f/a2/87/3fa287c717ff7a7102e6d872c68b5bda.jpg",
     price: 19.99,
     description: "Opis produktu 1",
   },
   {
     id: 2,
     name: "Produkt 2",
-    image: "https://example.com/image2.jpg",
+    image:
+      "https://i.pinimg.com/564x/af/bf/64/afbf6429e91a83229edea43375a58312.jpg",
     price: 29.99,
     description: "Opis produktu 2",
   },
   {
     id: 3,
     name: "Produkt 3",
-    image: "https://example.com/image3.jpg",
+    image:
+      "https://i.pinimg.com/564x/3f/a2/87/3fa287c717ff7a7102e6d872c68b5bda.jpg",
     price: 39.99,
     description: "Opis produktu 3",
   },

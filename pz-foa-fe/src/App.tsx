@@ -5,13 +5,17 @@ import RegisterForm from "./components/RegisterForm";
 import ForgotPasswordForm from "./components/ForgotPasswordForm";
 import ProductList from "./components/ProductList";
 import OrdersList from "./components/OrdersList";
-import AddProductForm from "./components/AddProductForm"; // Dodaj import
+import AddProductForm from "./components/AddProductForm";
 
 const Home = () => {
   const [currentPage, setCurrentPage] = useState("login");
 
   const navigateTo = (page) => {
     setCurrentPage(page);
+  };
+
+  const addToCart = (product) => {
+    setCart([...cart, product]);
   };
 
   return (
@@ -47,6 +51,7 @@ const Home = () => {
       {currentPage === "forgotPassword" && (
         <ForgotPasswordForm onBackToLoginClick={() => navigateTo("login")} />
       )}
+      {currentPage === "products" && <ProductList addToCart={addToCart} />}
       {currentPage === "products" && <ProductList />}
       {currentPage === "orders" && <OrdersList />}
       {currentPage === "addProduct" && <AddProductForm />}{" "}

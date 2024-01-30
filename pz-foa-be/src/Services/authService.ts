@@ -3,7 +3,10 @@ import { DB } from '../utils/database/database';
 import { Repository } from 'typeorm';
 import { sign, verify } from 'jsonwebtoken';
 import { JWTPayload } from '../utils/passwd/jwt';
-import { UserInterface } from '../Interfaces/user-interface';
+import {
+  UserInterface,
+  UserRegisterInterface,
+} from '../Interfaces/user-interface';
 import { loginDataInterface } from '../Interfaces/loginData-interface';
 import { Response } from 'express';
 import {
@@ -14,6 +17,7 @@ import {
 } from '../utils/errors';
 import { hashPWD } from '../utils/passwd/hashPWD';
 import messages from '../data/en-EN.json';
+import { serviceResult } from 'src/Interfaces/serviceReturn-interface';
 
 class AuthService {
   constructor(
@@ -47,82 +51,75 @@ class AuthService {
     return token;
   }
 
-  public async login(loginData: loginDataInterface, res: Response) {
-    try {
-      const { salt } = await this.userRepo.findOne({
-        where: [{ login: loginData.login }, { email: loginData.email }],
-        select: { salt: true },
-      });
+  public async login(loginData: loginDataInterface): Promise<serviceResult> {
+    const { salt } = await this.userRepo.findOne({
+      where: [{ login: loginData.login }, { email: loginData.email }],
+      select: { salt: true },
+    });
 
-      const pass = await hashPWD(loginData.passwordHSW, salt);
+    const pass = await hashPWD(loginData.passwordHSW, salt);
 
-      const user = await this.userRepo.findOne({
-        where: [
-          { login: loginData.login, passwordHSW: pass },
-          { email: loginData.email, passwordHSW: pass },
-        ],
-      });
+    const user = await this.userRepo.findOne({
+      where: [
+        { login: loginData.login, passwordHSW: pass },
+        { email: loginData.email, passwordHSW: pass },
+      ],
+    });
+    if (!user) throw new AuthErrorNotFound();
 
-      user.passwordHSW = null;
-      const token = this.createToken(await this.newToken(user));
-      return res
-        .cookie('jwt', token.accessToken, {
-          secure: false,
-          domain: 'localhost',
-          maxAge: parseInt(process.env.AUTH_EXPIRATIONTIME),
-          httpOnly: true,
-        })
-        .status(200)
-        .json({ user, message: messages.AUTH.LOGIN });
-    } catch {
-      throw new AuthErrorNotFound();
-    }
+    user.passwordHSW = null;
+    const token = this.createToken(await this.newToken(user));
+
+    return {
+      status: 200,
+      data: {
+        token,
+        user,
+        message: messages.AUTH.LOGIN,
+      },
+    };
   }
 
-  public async logout(token: string, res: Response) {
-    try {
-      await this.userRepo.findOneBy({ token });
-      return res
-        .clearCookie('jwt', {
-          secure: false,
-          domain: 'localhost',
-          httpOnly: true,
-        })
-        .status(200)
-        .json(messages.AUTH.LOGOUT);
-    } catch {
-      throw new AuthError(messages.ERROR.USER_NOT_FOUND);
-    }
+  public async logout(token: string): Promise<serviceResult> {
+    const { id }: JWTPayload = verify(
+      token,
+      process.env.AUTH_SECRET
+    ) as JWTPayload;
+    const user = await this.userRepo.findOneBy({ token: id });
+    if (!user) throw new AuthErrorUnauthorized();
+    return {
+      status: 200,
+      data: {
+        message: messages.AUTH.LOGOUT,
+      },
+    };
   }
 
   public async register(
-    login: string,
-    email: string,
-    password: string,
-    res: Response
-  ) {
-    try {
-      let uuid = null;
-      let isTaken = true;
-      do {
-        uuid = crypto.randomUUID();
-        isTaken = (await this.userRepo.findOneBy({ id: uuid })) ? true : false;
-      } while (isTaken);
-      const salt = crypto.randomUUID();
+    registerData: UserRegisterInterface
+  ): Promise<serviceResult> {
+    let uuid = null;
+    let isTaken = true;
+    do {
+      uuid = crypto.randomUUID();
+      isTaken = (await this.userRepo.findOneBy({ id: uuid })) ? true : false;
+    } while (isTaken);
+    const salt = crypto.randomUUID();
 
-      await this.userRepo.insert({
-        id: uuid,
-        login,
-        email,
-        passwordHSW: await hashPWD(password, salt),
-        salt,
-        token: null,
-      });
-      res.status(201).json(messages.AUTH.USER_CREATED);
-    } catch (err) {
-      if (err.code === 'ER_DUP_ENTRY') throw new AuthErrorUserExists();
-      throw new AuthError();
-    }
+    await this.userRepo.insert({
+      id: uuid,
+      login: registerData.login,
+      email: registerData.email,
+      passwordHSW: await hashPWD(registerData.passwordHSW, salt),
+      salt,
+      token: null,
+    });
+    return {
+      status: 201,
+      data: {
+        message: messages.AUTH.USER_CREATED,
+      },
+    };
   }
 
   public async validate(reqToken: string): Promise<UserEntity | null> {

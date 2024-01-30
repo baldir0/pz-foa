@@ -1,11 +1,16 @@
 import { Router } from 'express';
-import { UserEntity } from './../../src/Entities/user.entity';
-import { AddProductToOrderInterface } from './../../src/Interfaces/productOrder-interface';
-import { serviceResult } from './../../src/Interfaces/serviceReturn-interface';
-import { authService } from './../../src/Services/authService';
-import { orderService } from './../../src/Services/orderService';
-import { AuthErrorLackOfPrivilages } from './../../src/utils/errors';
-import { OrderDataInterface } from 'src/Interfaces/order-interface';
+import { UserEntity } from '../../Entities/user.entity';
+import { AddProductToOrderInterface } from '../../Interfaces/productOrder-interface';
+import { serviceResult } from '../../Interfaces/serviceReturn-interface';
+import { authService } from '../../Services/authService';
+import { orderService } from '../../Services/orderService';
+import { AuthErrorLackOfPrivilages } from '../../utils/errors';
+import { RequestBodyValidator } from '../../utils/middlewares/RequestBodyValidator';
+import { OrderPositionDataDTO } from './dto/orderPositionData.dto';
+import { OrderDataDTO } from './dto/orderData.dto';
+import { UpdateOrderDataDTO } from './dto/updateOrderData.dto';
+import { NewOrderDataDTO } from './dto/newOrderData.dto';
+import { NewOrderDataInterface } from '../../Interfaces/order-interface';
 
 const OrderRouter = Router();
 
@@ -45,24 +50,26 @@ OrderRouter.get('/list', async (req, res, next) => {
       next(err);
     }
   })
-  .patch('/:orderId/position/:positionId', async (req, res, next) => {
-    try {
-      // [x] Admin only function
-      const user: UserEntity = await authService.validate(req.cookies.jwt);
-      if (!user.isAdmin) throw new AuthErrorLackOfPrivilages();
+  .patch(
+    '/:orderId/position/:positionId',
+    RequestBodyValidator(OrderPositionDataDTO),
+    async (req, res, next) => {
+      try {
+        // [x] Admin only function
+        const user: UserEntity = await authService.validate(req.cookies.jwt);
+        if (!user.isAdmin) throw new AuthErrorLackOfPrivilages();
 
-      const updateData: AddProductToOrderInterface = req.body;
-
-      const result: serviceResult = await orderService.updateOrderPosition(
-        req.params.orderId,
-        req.params.positionId,
-        updateData
-      );
-      res.status(result.status).json(result.data);
-    } catch (err) {
-      next(err);
+        const result: serviceResult = await orderService.updateOrderPosition(
+          req.params.orderId,
+          req.params.positionId,
+          req.body
+        );
+        res.status(result.status).json(result.data);
+      } catch (err) {
+        next(err);
+      }
     }
-  })
+  )
   .delete('/:orderId/position/:positionId', async (req, res, next) => {
     try {
       // [x] Admin only function
@@ -78,23 +85,28 @@ OrderRouter.get('/list', async (req, res, next) => {
       next(err);
     }
   })
-  .post('/:orderId/position/', async (req, res, next) => {
-    try {
-      // [x] Admin only function
-      const user: UserEntity = await authService.validate(req.cookies.jwt);
-      if (!user.isAdmin) throw new AuthErrorLackOfPrivilages();
+  .post(
+    '/:orderId/position/',
+    RequestBodyValidator(OrderPositionDataDTO),
+    async (req, res, next) => {
+      try {
+        // [x] Admin only function
+        const user: UserEntity = await authService.validate(req.cookies.jwt);
+        if (!user.isAdmin) throw new AuthErrorLackOfPrivilages();
 
-      const productData: AddProductToOrderInterface = req.body;
-      const result: serviceResult = await orderService.addProduct(
-        productData.productId,
-        req.params.orderId,
-        productData.amount
-      );
-      res.status(result.status).json(result.data);
-    } catch (err) {
-      next(err);
+        const productData: AddProductToOrderInterface = req.body;
+        const result: serviceResult = await orderService.addProduct(
+          productData.productId,
+          req.params.orderId,
+          productData.amount,
+          productData.price
+        );
+        res.status(result.status).json(result.data);
+      } catch (err) {
+        next(err);
+      }
     }
-  })
+  )
   .get('/:orderId/position/:positionId', async (req, res, next) => {
     try {
       const user: UserEntity = await authService.validate(req.cookies.jwt);
@@ -109,24 +121,27 @@ OrderRouter.get('/list', async (req, res, next) => {
       next(err);
     }
   })
-  .patch('/:id', async (req, res, next) => {
-    try {
-      const user: UserEntity = await authService.validate(req.cookies.jwt);
-      const orderData: OrderDataInterface = req.body;
+  .patch(
+    '/:id',
+    RequestBodyValidator(UpdateOrderDataDTO),
+    async (req, res, next) => {
+      try {
+        const user: UserEntity = await authService.validate(req.cookies.jwt);
 
-      const result: serviceResult = await orderService.update(
-        user,
-        req.params.id,
-        orderData
-      );
-      res.status(result.status).json(result.data);
-      // [x]: Update single order
-      // [x]: check is user the admin
-      // [x]: check is user the owner
-    } catch (err) {
-      next(err);
+        const result: serviceResult = await orderService.update(
+          user,
+          req.params.id,
+          req.body
+        );
+        res.status(result.status).json(result.data);
+        // [x]: Update single order
+        // [x]: check is user the admin
+        // [x]: check is user the owner
+      } catch (err) {
+        next(err);
+      }
     }
-  })
+  )
   .delete('/:id', async (req, res, next) => {
     try {
       const user: UserEntity = await authService.validate(req.cookies.jwt);
@@ -140,12 +155,13 @@ OrderRouter.get('/list', async (req, res, next) => {
       next(err);
     }
   })
-  .post('/', async (req, res, next) => {
+  .post('/', RequestBodyValidator(NewOrderDataDTO), async (req, res, next) => {
     try {
+      // TODO: ADD ADDRESS FIELD
       const user: UserEntity = await authService.validate(req.cookies.jwt);
-      const products: [AddProductToOrderInterface] = req.body;
+      const data: NewOrderDataInterface = req.body;
 
-      const result: serviceResult = await orderService.create(user, products);
+      const result: serviceResult = await orderService.create(user, data);
 
       res.status(result.status).json(result.data);
       // [x]: Create new Order

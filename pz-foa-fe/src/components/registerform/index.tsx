@@ -39,7 +39,7 @@ const RegisterForm = ({ onBackToLoginClick }) => {
 
   const handleRegister = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/api/register', {
+      const response = await axios.post('http://localhost:3000/auth/register', {
         login: username,
         passwordHSW: password,
         email,

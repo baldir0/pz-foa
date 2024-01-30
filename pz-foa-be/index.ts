@@ -23,7 +23,7 @@ connect();
 
 app.use(
   cors({
-    origin: 'localhost:3000',
+    origin: '*', // SET THIS TO FRONTEND ADDRESS - * ALLOW ACCES TO EVERYONE
   })
 );
 

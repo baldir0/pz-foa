@@ -37,9 +37,9 @@ const LoginForm = ({ onRegisterClick, onForgotPasswordClick }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/api/login', {
-        username,
-        password,
+      const response = await axios.post('http://localhost:3000/auth/login', {
+        login: username,
+        passwordHSW: password,
       });
 
       if (response.status === 200) {

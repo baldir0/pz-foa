@@ -1,20 +1,20 @@
 // src/components/Menu.js
-import React, { useState } from "react";
-import ProductsList from "./components/ProductsList";
-import OrdersList from "./components/OrdersList";
-import UserProfile from "./components/UserProfile";
+import React, { useState } from 'react';
+import ProductsList from './../ProductList';
+import OrdersList from './../OrdersList';
+// import UserProfile from "./../UserProfile";
 
 function Menu() {
-  const [activeMenu, setActiveMenu] = useState("products"); // Początkowo aktywne menu: 'products'
+  const [activeMenu, setActiveMenu] = useState('products'); // Początkowo aktywne menu: 'products'
 
   const renderMenuContent = () => {
     switch (activeMenu) {
-      case "products":
+      case 'products':
         return <ProductsList />;
-      case "orders":
+      case 'orders':
         return <OrdersList />;
-      case "profile":
-        return <UserProfile />;
+      // case 'profile':
+      // return <UserProfile />;
       default:
         return null;
     }
@@ -23,9 +23,9 @@ function Menu() {
   return (
     <div>
       <ul>
-        <li onClick={() => setActiveMenu("products")}>Lista Produktów</li>
-        <li onClick={() => setActiveMenu("orders")}>Lista Zamówień</li>
-        <li onClick={() => setActiveMenu("profile")}>Profil Użytkownika</li>
+        <li onClick={() => setActiveMenu('products')}>Lista Produktów</li>
+        <li onClick={() => setActiveMenu('orders')}>Lista Zamówień</li>
+        <li onClick={() => setActiveMenu('profile')}>Profil Użytkownika</li>
       </ul>
       {renderMenuContent()}
     </div>

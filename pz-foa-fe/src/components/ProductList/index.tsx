@@ -1,42 +1,47 @@
 // ProductList.js
-import React from "react";
-import "./styles.css"; // Importuj plik CSS
+import React from 'react';
+import './styles.css'; // Importuj plik CSS
+import { ProductInterface } from '../../interface/productInterface';
 
 const products = [
   {
-    id: 1,
-    name: "Produkt 1",
+    id: '1',
+    name: 'Produkt 1',
     image:
-      "https://i.pinimg.com/564x/3f/a2/87/3fa287c717ff7a7102e6d872c68b5bda.jpg",
+      'https://i.pinimg.com/564x/3f/a2/87/3fa287c717ff7a7102e6d872c68b5bda.jpg',
     price: 19.99,
-    description: "Opis produktu 1",
+    description: 'Opis produktu 1',
   },
   {
-    id: 2,
-    name: "Produkt 2",
+    id: '2',
+    name: 'Produkt 2',
     image:
-      "https://i.pinimg.com/564x/af/bf/64/afbf6429e91a83229edea43375a58312.jpg",
+      'https://i.pinimg.com/564x/af/bf/64/afbf6429e91a83229edea43375a58312.jpg',
     price: 29.99,
-    description: "Opis produktu 2",
+    description: 'Opis produktu 2',
   },
   {
-    id: 3,
-    name: "Produkt 3",
+    id: '3',
+    name: 'Produkt 3',
     image:
-      "https://i.pinimg.com/564x/3f/a2/87/3fa287c717ff7a7102e6d872c68b5bda.jpg",
+      'https://i.pinimg.com/564x/3f/a2/87/3fa287c717ff7a7102e6d872c68b5bda.jpg',
     price: 39.99,
-    description: "Opis produktu 3",
+    description: 'Opis produktu 3',
   },
 ];
 
-const ProductList = () => {
-  const handleAddToCart = (productId) => {
-    // Obsługa dodawania do koszyka
-    console.log(`Produkt o ID ${productId} został dodany do koszyka.`);
-  };
+const ProductList = ({
+  addToCart,
+}: {
+  addToCart: (product: ProductInterface) => void;
+}) => {
+  // const handleAddToCart = (productId: string) => {
+  //   // Obsługa dodawania do koszyka
+  //   console.log(`Produkt o ID ${productId} został dodany do koszyka.`);
+  // };
 
   return (
-    <div className="add-product-form">
+    <div className='add-product-form'>
       <h2>Lista Produktów</h2>
       <ul>
         {products.map((product) => (
@@ -44,12 +49,20 @@ const ProductList = () => {
             <img
               src={product.image}
               alt={`Grafika ${product.name}`}
-              style={{ maxWidth: "100px" }}
+              style={{ maxWidth: '100px' }}
             />
             <h3>{product.name}</h3>
             <p>Cena: {product.price} zł</p>
             <p>Opis: {product.description}</p>
-            <button onClick={() => handleAddToCart(product.id)}>
+            <button
+              onClick={() =>
+                addToCart({
+                  productId: product.id,
+                  amount: 1,
+                  price: product.price,
+                })
+              }
+            >
               Dodaj do koszyka
             </button>
           </li>

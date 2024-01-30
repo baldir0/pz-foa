@@ -1,7 +1,7 @@
 // LoginForm.js
-import React from "react";
-import "./styles.css"; // Importuj plik CSS
-import axios from "axios";
+import React, { useState } from 'react';
+import './styles.css'; // Importuj plik CSS
+import axios from 'axios';
 
 /*
 const LoginForm = ({ onRegisterClick, onForgotPasswordClick }) => {
@@ -32,25 +32,25 @@ export default LoginForm;
 */
 
 const LoginForm = ({ onRegisterClick, onForgotPasswordClick }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/api/login", {
+      const response = await axios.post('http://localhost:3000/api/login', {
         username,
         password,
       });
 
       if (response.status === 200) {
         // Obsługa sukcesu, np. przekierowanie do innej strony
-        console.log("Zalogowano pomyślnie");
+        console.log('Zalogowano pomyślnie');
       } else {
         // Obsługa błędu, np. wyświetlenie komunikatu
-        console.error("Błąd logowania");
+        console.error('Błąd logowania');
       }
     } catch (error) {
-      console.error("Wystąpił błąd podczas komunikacji z serwerem", error);
+      console.error('Wystąpił błąd podczas komunikacji z serwerem', error);
     }
   };
 
@@ -60,19 +60,19 @@ const LoginForm = ({ onRegisterClick, onForgotPasswordClick }) => {
       <form>
         <label>Username:</label>
         <input
-          type="text"
+          type='text'
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
         <br />
         <label>Password:</label>
         <input
-          type="password"
+          type='password'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
         <br />
-        <button type="button" onClick={handleLogin}>
+        <button type='button' onClick={handleLogin}>
           Zaloguj
         </button>
       </form>

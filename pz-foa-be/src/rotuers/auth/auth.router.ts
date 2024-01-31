@@ -34,6 +34,15 @@ AuthRouter.post(
   }
 );
 
+AuthRouter.get('/validate', async (req, res, next) => {
+  try {
+    const result = await authService.validate(req.cookies.jwt);
+    res.sendStatus(200);
+  } catch (err) {
+    next(err);
+  }
+});
+
 AuthRouter.get('/logout', async (req, res, next) => {
   try {
     if (!req.cookies.jwt) throw new AuthErrorNotFound();

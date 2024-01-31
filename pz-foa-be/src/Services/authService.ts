@@ -56,6 +56,7 @@ class AuthService {
       where: [{ login: loginData.login }, { email: loginData.email }],
       select: { salt: true },
     });
+    if (!salt) throw new AuthErrorNotFound();
 
     const pass = await hashPWD(loginData.passwordHSW, salt);
 

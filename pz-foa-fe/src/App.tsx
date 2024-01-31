@@ -22,6 +22,19 @@ const Home = () => {
   };
 
   useEffect(() => {
+    const loggedOnlyPage = ['addProduct', 'orders', 'login', 'register'];
+    if (loggedOnlyPage.includes(currentPage))
+      axios
+        .get('http://localhost:3000/auth/validate', { withCredentials: true })
+        .then((result) => {
+          if (result.status === 200) setIsLogged(true);
+        })
+        .catch(() => {
+          setIsLogged(false);
+        });
+  }, [currentPage]);
+
+  useEffect(() => {
     if (isLogged) {
       setCurrentPage('products');
     } else {

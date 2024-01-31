@@ -23,7 +23,8 @@ connect();
 
 app.use(
   cors({
-    origin: '*', // SET THIS TO FRONTEND ADDRESS - * ALLOW ACCES TO EVERYONE
+    origin: 'http://localhost:5173', // SET THIS TO FRONTEND ADDRESS - * ALLOW ACCES TO EVERYONE
+    credentials: true,
   })
 );
 

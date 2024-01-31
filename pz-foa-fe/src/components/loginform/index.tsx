@@ -31,23 +31,31 @@ const LoginForm = ({ onRegisterClick, onForgotPasswordClick }) => {
 export default LoginForm;
 */
 
-const LoginForm = ({ onRegisterClick, onForgotPasswordClick }) => {
+const LoginForm = ({ onRegisterClick, onForgotPasswordClick, login }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = async () => {
+  const handleLogin = async (event: SubmitEvent) => {
+    event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/auth/login', {
-        login: username,
-        passwordHSW: password,
-      });
+      const response = await axios.post(
+        'http://localhost:3000/auth/login',
+        {
+          login: username,
+          passwordHSW: password,
+        },
+        { withCredentials: true }
+      );
 
       if (response.status === 200) {
         // Obsługa sukcesu, np. przekierowanie do innej strony
+        console.log(response);
         console.log('Zalogowano pomyślnie');
+        login(true);
       } else {
         // Obsługa błędu, np. wyświetlenie komunikatu
         console.error('Błąd logowania');
+        login(false);
       }
     } catch (error) {
       console.error('Wystąpił błąd podczas komunikacji z serwerem', error);
@@ -57,7 +65,7 @@ const LoginForm = ({ onRegisterClick, onForgotPasswordClick }) => {
   return (
     <div>
       <h2>Zaloguj się</h2>
-      <form>
+      <form onSubmit={handleLogin}>
         <label>Username:</label>
         <input
           type='text'
@@ -72,9 +80,7 @@ const LoginForm = ({ onRegisterClick, onForgotPasswordClick }) => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <br />
-        <button type='button' onClick={handleLogin}>
-          Zaloguj
-        </button>
+        <button type='submit'>Zaloguj</button>
       </form>
       <p>
         Nie masz konta? <span onClick={onRegisterClick}>Zarejestruj się</span>

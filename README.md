@@ -54,10 +54,17 @@ npm i
    ```
 
 ## Struktura projektu
-### */pz-foa-be* - back-end
+##### */pz-foa-be* - back-end
 * */src* 
-
-### */pz-foa-fe* - front-end
+* */src/Entities*
+* */src/Interfaces*
+* */src/Services*
+* */src/__test__*
+* */src/data*
+* */src/rotuers*
+* */src/utils*
+  
+##### */pz-foa-fe* - front-end
 * */src* - Cześć aplikacji nie widoczna dla użytkownika
 * */public* - Cześć aplikacji widoczna dla użytkownika
 * */public/assets* - Assety aplikacji

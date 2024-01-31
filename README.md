@@ -5,14 +5,17 @@ Aplikacja do zamawiania jedzenia online, z dodatkową opcją pozwalającą na wy
 
 ## Spis treści
 
+
+- [Funkcjonalności](#funkcjonalności)
+- [Wymagania](#wymagania)
 - [Instalacja](#instalacja)
 - [Uruchamianie](#uruchamianie)
 - [Struktura projektu](#struktura-projektu)
+- 
 - [Konfiguracja](#konfiguracja)
 - [Używanie aplikacji](#używanie-aplikacji)
 - [Baza danych](#baza-danych)
 - [Contributing](#contributing)
-- [Licencja](#licencja)
 
 ## Funkcjonalności
 * Aplikacja pozwala na zamawianie jedzenia

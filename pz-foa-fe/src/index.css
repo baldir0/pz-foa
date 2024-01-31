@@ -76,7 +76,7 @@ body {
   font-family: 'Arial', sans-serif;
 }
 
-nav {
+.menu-container nav {
   background-color: #333;
   color: #fff;
   padding: 10px;
@@ -88,23 +88,23 @@ nav {
   justify-content: space-between;
 }
 
-ul {
+.menu-container ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
   display: flex;
 }
 
-li {
+.menu-container li {
   margin-right: 20px;
   cursor: pointer;
 }
 
-.login-options {
+.menu-container .login-options {
   display: flex;
 }
 
-.login-options span {
+.menu-container .login-options span {
   margin-right: 20px;
   cursor: pointer;
 }
@@ -115,7 +115,7 @@ li {
 
 /* Home.css */
 
-div {
+.menu-container {
   margin-top: 50px; /* Dodaj odstęp pod menu */
 }
 

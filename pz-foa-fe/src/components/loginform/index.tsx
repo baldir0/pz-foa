@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import './styles.css'; // Importuj plik CSS
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 /*
 const LoginForm = ({ onRegisterClick, onForgotPasswordClick }) => {
@@ -38,25 +39,33 @@ const LoginForm = ({ onRegisterClick, onForgotPasswordClick, login }) => {
   const handleLogin = async (event: SubmitEvent) => {
     event.preventDefault();
     try {
-      const response = await axios.post(
-        'http://localhost:3000/auth/login',
-        {
-          login: username,
-          passwordHSW: password,
-        },
-        { withCredentials: true }
-      );
+      const response = axios
+        .post(
+          'http://localhost:3000/auth/login',
+          {
+            login: username,
+            passwordHSW: password,
+          },
+          { withCredentials: true }
+        )
+        .then((response) => {
+          if (response.status === 200) {
+            // Obsługa sukcesu, np. przekierowanie do innej strony
+            console.log(response);
+            console.log('Zalogowano pomyślnie');
+            login(true);
+          } else {
+            // Obsługa błędu, np. wyświetlenie komunikatu
+            console.error('Błąd logowania');
+            login(false);
+          }
+        });
 
-      if (response.status === 200) {
-        // Obsługa sukcesu, np. przekierowanie do innej strony
-        console.log(response);
-        console.log('Zalogowano pomyślnie');
-        login(true);
-      } else {
-        // Obsługa błędu, np. wyświetlenie komunikatu
-        console.error('Błąd logowania');
-        login(false);
-      }
+      toast.promise(response, {
+        pending: 'Checking login data...',
+        error: 'Incorret login data',
+        success: 'Logged in',
+      });
     } catch (error) {
       console.error('Wystąpił błąd podczas komunikacji z serwerem', error);
     }

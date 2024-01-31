@@ -9,6 +9,8 @@ import AddProductForm from './components/AddProductForm';
 import { ProductInterface } from './interface/productInterface';
 import Cart from './components/Cart';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Home = () => {
   const [currentPage, setCurrentPage] = useState('login');
@@ -29,7 +31,7 @@ const Home = () => {
 
   const addToCart = (product: ProductInterface): void => {
     setCart([...cart, product]);
-    console.log(product);
+    toast(`${product.name} added to cart!`, { type: 'info' });
   };
 
   const logout = async () => {
@@ -43,50 +45,37 @@ const Home = () => {
   };
 
   const removeFromCart = (productId: string): void => {
-    //setCart(
-    // cart.filter((pos) => {
-    // pos.productId !== productId;
-    //})
-    //);
-    console.log(
-      cart.filter((pos) => {
-        pos.productId !== productId;
-        console.log(productId);
-        console.log(pos.productId !== productId);
-      })
-    );
-    const _cart = cart;
-    const indextoremove = _cart.findIndex((pos) => pos.productId === productId);
-    _cart.slice(indextoremove, 1);
-    setCart([..._cart]);
-    console.log(_cart);
-    console.log(cart);
-    console.log(indextoremove);
+    const localCart = [...cart];
+    const toRemove = localCart.findIndex((item) => {
+      return item.productId === productId;
+    });
+    localCart.splice(toRemove, 1);
+    setCart([...localCart]);
   };
 
   return (
-    <div>
+    <div className='menu-container'>
       <nav>
         <ul>
           <li onClick={() => navigateTo('products')}>Lista Produktów</li>
           <li onClick={() => navigateTo('orders')}>Lista Zamówień</li>
           <li onClick={() => navigateTo('profile')}>Profil Użytkownika</li>
-          <li onClick={() => navigateTo('addProduct')}>
-            Dodaj nowy produkt
-          </li>{' '}
+          <li onClick={() => navigateTo('addProduct')}>Dodaj nowy produkt</li>
           {/* Dodaj nową opcję */}
         </ul>
         <div className='login-options'>
-          {!isLogged && currentPage !== 'login' && (
-            <span onClick={() => navigateTo('login')}>Zaloguj</span>
-          )}
-          {!isLogged && currentPage !== 'register' && (
-            <span onClick={() => navigateTo('register')}>Zarejestruj się</span>
-          )}
-          {isLogged && <span onClick={() => logout()}>Logout</span>}
-          {currentPage !== 'Cart' && (
-            <span onClick={() => navigateTo('Cart')}>Koszyk</span>
-          )}
+          <ul>
+            {!isLogged && currentPage !== 'login' && (
+              <li onClick={() => navigateTo('login')}>Zaloguj</li>
+            )}
+            {!isLogged && currentPage !== 'register' && (
+              <li onClick={() => navigateTo('register')}>Zarejestruj się</li>
+            )}
+            {isLogged && <li onClick={() => logout()}>Logout</li>}
+            {currentPage !== 'Cart' && (
+              <li onClick={() => navigateTo('Cart')}>Koszyk</li>
+            )}
+          </ul>
         </div>
       </nav>
       {currentPage === 'login' && (
@@ -111,6 +100,7 @@ const Home = () => {
         <AddProductForm onAddProduct={() => {}} />
       )}{' '}
       {/* Dodaj formularz dla nowej opcji */}
+      <ToastContainer limit={3} />
     </div>
   );
 };

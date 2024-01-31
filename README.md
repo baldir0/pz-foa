@@ -4,23 +4,16 @@
 Aplikacja do zamawiania jedzenia online, z dodatkową opcją pozwalającą na wygodne zarządzanie restauracją oraz dostępnymi w nich menu przez użytkowników posiadających odpowiednie uprawnienia.
 
 ## Spis treści
-
-
 - [Funkcjonalności](#funkcjonalności)
 - [Wymagania](#wymagania)
 - [Instalacja](#instalacja)
 - [Uruchamianie](#uruchamianie)
 - [Struktura projektu](#struktura-projektu)
-- 
-- [Konfiguracja](#konfiguracja)
-- [Używanie aplikacji](#używanie-aplikacji)
-- [Baza danych](#baza-danych)
-- [Contributing](#contributing)
 
 ## Funkcjonalności
 * Aplikacja pozwala na zamawianie jedzenia
 * Aplikacja pozwala na tworzenie konta użytkownika
-* -Aplikacja pozwala na tworzenie profili restauracji-
+* _Aplikacja pozwala na tworzenie profili restauracji_
 * Aplikacja pozwala na tworzenie, edycje oraz usuwanie menu dla poszczególnych restauracji
 * Aplikacja pozwala na tworzenie, edycje oraz usuwanie produktów dla poszczególnych menu
 
@@ -48,7 +41,7 @@ cd pz-foa-be/
 npm i
 ```
 
-## Uruchomienie
+## Uruchamianie
 1. Uruchom serwer
    ```{bash}
    cd pz-foa-be/
@@ -61,8 +54,10 @@ npm i
    ```
 
 ## Struktura projektu
+### */pz-foa-be* - back-end
+* */src* 
 
-* */* - Folder główny
+### */pz-foa-fe* - front-end
 * */src* - Cześć aplikacji nie widoczna dla użytkownika
 * */public* - Cześć aplikacji widoczna dla użytkownika
 * */public/assets* - Assety aplikacji

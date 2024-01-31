@@ -62,9 +62,9 @@ const LoginForm = ({ onRegisterClick, onForgotPasswordClick, login }) => {
         });
 
       toast.promise(response, {
-        pending: 'Checking login data...',
-        error: 'Incorret login data',
-        success: 'Logged in',
+        pending: 'Sprawdzanie danych logowania...',
+        error: 'Nieprawidłowe dane logowania',
+        success: 'Zalogowano',
       });
     } catch (error) {
       console.error('Wystąpił błąd podczas komunikacji z serwerem', error);

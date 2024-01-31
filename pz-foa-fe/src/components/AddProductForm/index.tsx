@@ -13,7 +13,7 @@ const AddProductForm = ({ onAddProduct }) => {
   const handleAddProduct = () => {
     // Walidacja pól przed dodaniem produktu
     if (!productName || !productDescription || !imageLink || !productPrice) {
-      toast('Missing input fields data!', {
+      toast('Puste pola formularza!', {
         toastId: 'missingdata',
         type: 'error',
       });
@@ -43,9 +43,9 @@ const AddProductForm = ({ onAddProduct }) => {
           }
         }),
       {
-        pending: 'Creating product...',
-        success: 'Product created!',
-        error: 'Failed to create product!',
+        pending: 'Tworzenie produktu ...',
+        success: 'Produkt utworzony!',
+        error: 'Nie udało się utworzyć produktu!',
       }
     );
     // onAddProduct(newProduct);

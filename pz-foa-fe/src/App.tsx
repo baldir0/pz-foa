@@ -44,7 +44,7 @@ const Home = () => {
 
   const addToCart = (product: ProductInterface): void => {
     setCart([...cart, product]);
-    toast(`${product.name} added to cart!`, { type: 'info' });
+    toast(`${product.name} dodany/e do koszyka!`, { type: 'info' });
   };
 
   const logout = async () => {

@@ -1,0 +1,26 @@
+{
+  "ERROR": {
+    "UNAUTHORIZED_USER": "Login failed. Cannot find matching user!",
+    "USER_NOT_FOUND": "Cannot find matching user!",
+    "INVALID_LOGIN_DATA": "Recived invalid login data!",
+    "MISSING_LOGIN_OR_EMAIL": "Login/Email field is empty!",
+    "MISSING_PASSWORD": "Password field is empty",
+    "INVALID_REGISTER_DATA": "Recived invalid register data!",
+    "REGISTER_FAILED": "Cannot create the user, please try again later.",
+    "USER_ALREADY_EXIST": "Following login data are already taken.",
+    "PRODUCT_INSERTION_FAILURE": "Cannot create product, please try again.",
+    "PRODUCT_NOT_FOUND": "Cannot find product with passed id.",
+    "USER_NOT_LOG_IN": "Log in first!",
+    "LACK_OF_PRIVILAGES": "You do not have privilages to do this.",
+    "ORDER_NOT_FOUND": "Cannot find order with passed id.",
+    "DATA_TRANSFER_MISSING_FIELD": "Field cannot be empty: ",
+    "DATA_TRANSFER_INVALID_EMAIL": "Given email is invalid.",
+    "DATA_TRANSFER_VALUE_IS_TOO_LONG": " value is to long.",
+    "DATA_TRANSFER_INVALID_TYPE": " has invalid type."
+  },
+  "AUTH": {
+    "USER_CREATED": "The user has been successful created.",
+    "LOGOUT": "The user has been loogged out.",
+    "LOGIN": "successful logged in."
+  }
+}

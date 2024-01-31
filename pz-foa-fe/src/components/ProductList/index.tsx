@@ -15,7 +15,7 @@ const ProductList = ({
   const getProducts = async (): Promise<any> => {
     const response = await axios.get('http://localhost:3000/product/list');
     if (response.status === 200) {
-      toast('Product list obtained!', { type: 'info', toastId: '1' });
+      // toast('Product list obtained!', { type: 'info', toastId: '1' });
       return response.data[0];
     }
     throw Error('Failder to get product list.');

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import './styles.css'; // Importuj plik CSS
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const AddProductForm = ({ onAddProduct }) => {
   const [productName, setProductName] = useState('');
@@ -12,7 +13,10 @@ const AddProductForm = ({ onAddProduct }) => {
   const handleAddProduct = () => {
     // Walidacja pól przed dodaniem produktu
     if (!productName || !productDescription || !imageLink || !productPrice) {
-      alert('Proszę uzupełnić wszystkie pola.');
+      toast('Missing input fields data!', {
+        toastId: 'missingdata',
+        type: 'error',
+      });
       return;
     }
 
@@ -26,17 +30,24 @@ const AddProductForm = ({ onAddProduct }) => {
     };
 
     // Wywołanie funkcji przekazanej przez prop, aby dodać produkt
-    axios
-      .post('http://localhost:3000/product', newProduct, {
-        withCredentials: true,
-      })
-      .then((result) => {
-        if (result.status === 201) {
-          console.log('Produtct Created');
-        } else {
-          console.log('Cannot create a product');
-        }
-      });
+    toast.promise(
+      axios
+        .post('http://localhost:3000/product', newProduct, {
+          withCredentials: true,
+        })
+        .then((result) => {
+          if (result.status === 201) {
+            console.log('Produtct Created');
+          } else {
+            console.log('Cannot create a product');
+          }
+        }),
+      {
+        pending: 'Creating product...',
+        success: 'Product created!',
+        error: 'Failed to create product!',
+      }
+    );
     // onAddProduct(newProduct);
 
     // Zresetowanie pól formularza po dodaniu produktu

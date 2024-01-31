@@ -59,7 +59,7 @@ npm i
 * */src/Entities*
 * */src/Interfaces*
 * */src/Services*
-* */src/__test__*
+* */src/\_\_test__*
 * */src/data*
 * */src/rotuers*
 * */src/utils*
